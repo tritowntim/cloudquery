@@ -1,9 +1,15 @@
 
-<p>queries index...</p>
+<div class="sidebar">
+	<%= @table_list if @results_count == 0%> 
+</div>
 
-<%= form_tag '/query', method: :post do %>
-	<%= text_area_tag 'sql', nil, rows: 10, cols: 120 %>
-	<%= submit_tag 'query' %>
-<% end %>
+<div>
+	<%= form_tag '/query', method: :post do %>
+		<%= text_area_tag 'sql', @sql, rows: 10, cols: 120 %>
+		<%= submit_tag 'query' %>
+	<% end %>
+	<br/>
+	<%= link_to "list tables", root_path %>
 
-<%= @resultset %>
+	<%= @resultset %>
+</div>

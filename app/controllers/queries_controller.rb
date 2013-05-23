@@ -1,15 +1,29 @@
 class QueriesController < ApplicationController
 
 	def index
-		@resultset = ""
+		@resultset = nil
+		@results_count = 0
+		@table_list = db_tables.html_safe
 	end
 
 	def query
-		sql = params['sql']
-		results = QueryDb.connection.execute(sql)
+		@sql = params['sql']
+		results = QueryDb.connection.execute(@sql)
+
+		header = "<thead><tr><th/>"
+		types = "<tr><th/>"
+
+		results.fields().each_index do |i| 
+		    header += "<th>#{results.fname(i).upcase}</th>"
+		    c = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+		    types += "<td><em>#{c}</em></td>"
+		end
+
+		header += "</tr>"
+		types += "</tr></thead>"
 
 		i = 0
-		detail = "<table>"
+		detail = "<table>" + header + types
   	results.each do |row|
  			detail += "<tr>"
 			detail += "<td>#{i+=1}</td>"
@@ -21,8 +35,21 @@ class QueriesController < ApplicationController
 		detail += "</table>"
 
 		@resultset = detail.html_safe
+		@results_count = i
+
+		@table_list = db_tables.html_safe
 
 		render 'index'
 	end
+
+	private
+		def db_tables
+			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name")
+			table_list = "<p>Tables</p><ul>"
+			tables.each do |table|
+				table_list += "<li>#{table['table_name']}</li>"
+			end
+			table_list += "</ul>"
+		end
 
 end
