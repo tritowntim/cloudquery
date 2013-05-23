@@ -1,0 +1,9 @@
+
+<p>queries index...</p>
+
+<%= form_tag '/query', method: :post do %>
+	<%= text_area_tag 'sql', nil, rows: 10, cols: 120 %>
+	<%= submit_tag 'query' %>
+<% end %>
+
+<%= @resultset %>
