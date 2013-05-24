@@ -4,12 +4,14 @@
 </div>
 
 <div>
-	<%= form_tag '/query', method: :post do %>
-		<%= text_area_tag 'sql', @sql, rows: 10, cols: 120 %>
-		<%= submit_tag 'query' %>
+	
+	<%= form_for :query do |f| %>
+		<%= f.text_area :sql_text, rows: 10, cols: 120 %>
+		<%= f.submit 'query' %>
 	<% end %>
 	<br/>
-	<%= link_to "list tables", root_path %>
 
+	<%= link_to "list tables", root_path %>
+	<%= "#{@results_count} results" %> 
 	<%= @resultset %>
 </div>

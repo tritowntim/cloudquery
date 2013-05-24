@@ -1,6 +1,7 @@
 Cloudquery::Application.routes.draw do
 
-  post 'query' => 'queries#query'
+  # post 'query' => 'queries#query'
+  resources :queries
 
   root to: 'queries#index'
 

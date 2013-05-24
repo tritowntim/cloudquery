@@ -1,14 +1,22 @@
 class QueriesController < ApplicationController
 
 	def index
+		@query = Query.new
 		@resultset = nil
 		@results_count = 0
 		@table_list = db_tables.html_safe
 	end
 
-	def query
-		@sql = params['sql']
-		results = QueryDb.connection.execute(@sql)
+	def create
+		@query = Query.new(params[:query])
+		@query.save
+		sql = @query.sql_text
+		@query = Query.new
+		@query.sql_text = sql
+
+		puts "DB QUERY BEGIN #{Time.now}"
+		results = QueryDb.connection.execute(sql)
+		puts "DB QUERY END #{Time.now}"
 
 		table_oid = oid_table_name
 
@@ -24,18 +32,23 @@ class QueriesController < ApplicationController
 		types += "</tr></thead>"
 
 		i = 0
-		detail = "<table>" + header + types
+		table = "<table>" + header + types
+  	rows = []
   	results.each do |row|
- 			detail += "<tr>"
+ 			detail = "<tr>"
 			detail += "<td>#{i+=1}</td>"
 	    results.fields().each do |col|
 	    	detail += "<td>#{row[col].to_s}</td>"
 	    end 
 			detail += "</tr>"
+			rows << detail
 		end
-		detail += "</table>"
+		rows.each do |row|
+			table += row
+		end
+		table += "</table>"
 
-		@resultset = detail.html_safe
+		@resultset = table.html_safe
 		@results_count = i
 
 		@table_list = db_tables.html_safe
