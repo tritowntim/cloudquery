@@ -10,11 +10,12 @@ class QueriesController < ApplicationController
 		@sql = params['sql']
 		results = QueryDb.connection.execute(@sql)
 
+		table_oid = oid_table_name
+
 		header = "<thead><tr><th/>"
 		types = "<tr><th/>"
-
 		results.fields().each_index do |i| 
-		    header += "<th>#{results.fname(i).upcase}</th>"
+		    header += "<th>#{table_oid[results.ftable(i)]}<br>#{results.fname(i).upcase}</th>"
 		    c = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
 		    types += "<td><em>#{c}</em></td>"
 		end
@@ -50,6 +51,15 @@ class QueriesController < ApplicationController
 				table_list += "<li>#{table['table_name']}</li>"
 			end
 			table_list += "</ul>"
+		end
+
+		def oid_table_name
+			lookup = {}
+			pg_class = QueryDb.connection.execute("SELECT relname, oid FROM pg_class")
+			pg_class.each do |c|
+				lookup[c['oid'].to_i] = c['relname'] 
+			end
+			lookup
 		end
 
 end
