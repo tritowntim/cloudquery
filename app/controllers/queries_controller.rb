@@ -1,6 +1,7 @@
+
 class QueriesController < ApplicationController
-	
-	include ActionView::Helpers::NumberHelper
+
+	# include ActionView::Helpers::NumberHelpers
 
 	def recent
 		@queries = Query.order('created_at DESC').limit(120)
@@ -17,7 +18,7 @@ class QueriesController < ApplicationController
  		# @table_row_count = count_table_row(refresh)
 		# @table_row_counted_at = table_row_count_time 
 		@table_row_counted_at = nil
-		load_tables
+		# load_tables
 	end
 
 	def create
@@ -80,7 +81,7 @@ class QueriesController < ApplicationController
 	private
 
 		def sql_all_tables 
-			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name"
+			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type	 = 'BASE TABLE' ORDER BY table_name"
 		end
 
 		def db_tables
@@ -91,7 +92,7 @@ class QueriesController < ApplicationController
 				table_list += "<li>#{table['table_name']}"
 				if Metadata.exists?(name: table['table_name'])
 					c = Metadata.where(name: table['table_name']).first
-					table_list += " (#{number_with_delimiter(c.record_count)})"	
+					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(c.record_count)})"	
 				else
 					table_list += " <em>N/A</em>"
 				end
@@ -130,11 +131,18 @@ class QueriesController < ApplicationController
 		end
 
 		def load_tables
-			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name not like 'dim_km_prop%' AND table_name not like 'dim_user%' ORDER BY table_name")
+			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND TABLE_TYPE	 = 'BASE TABLE' AND table_name NOT IN ('dim_km_property','dim_km_property_group','dim_user','dim_user_current') ORDER BY table_name")
+			# Tables = {}
 			tables.each do |table|
-				unless Metadata.exists?(name: table['table_name'])
-					puts "counting #{table['table_name']} ..."
-					row_count = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
+				puts "counting #{table['table_name']} ..."
+				row_count = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
+				size_bytes = QueryDb.connection.execute("SELECT PG_TOTAL_RELATION_SIZE('#{table['table_name']}')")[0]['pg_total_relation_size']				
+				if Metadata.exists?(name: table['table_name'])
+					m = Metadata.where(name: table['table_name']).first
+					m.record_count = row_count
+					m.size_bytes = size_bytes
+					m.save
+				else
 					Metadata.create(object_type: 'table', schema: 'public', name: table['table_name'], record_count: row_count)
 				end
 			end

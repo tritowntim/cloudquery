@@ -19,3 +19,7 @@
 td pre {
 	margin-left: 0;
 }
+
+.col-numeric {
+	text-align: right;
+}

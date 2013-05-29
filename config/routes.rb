@@ -7,6 +7,8 @@ Cloudquery::Application.routes.draw do
     end
   end
 
+  resources :metadatas 
+
   root to: 'queries#index'
 
   # The priority is based upon order of creation:

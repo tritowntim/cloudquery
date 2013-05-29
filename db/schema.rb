@@ -11,15 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130528215633) do
+ActiveRecord::Schema.define(:version => 20130529161821) do
 
   create_table "metadata", :force => true do |t|
     t.string   "object_type"
     t.text     "schema"
     t.text     "name"
     t.integer  "record_count"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "size_bytes",   :limit => 8
   end
 
   create_table "queries", :force => true do |t|
