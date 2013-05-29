@@ -15,3 +15,7 @@
 .sidebar {
 	float: left;
 }
+
+td pre {
+	margin-left: 0;
+}

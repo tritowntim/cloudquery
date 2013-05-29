@@ -1,7 +1,11 @@
 Cloudquery::Application.routes.draw do
 
   # post 'query' => 'queries#query'
-  resources :queries
+  resources :queries do
+    collection do
+      get 'recent'
+    end
+  end
 
   root to: 'queries#index'
 

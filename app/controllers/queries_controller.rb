@@ -2,6 +2,10 @@ class QueriesController < ApplicationController
 	
 	include ActionView::Helpers::NumberHelper
 
+	def recent
+		@queries = Query.order('created_at DESC').limit(120)
+	end
+
 	def index
 		@query = Query.new
 		@resultset = nil
