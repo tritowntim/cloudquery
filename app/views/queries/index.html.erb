@@ -1,5 +1,7 @@
 
 <div class="sidebar">
+	<%= "counts as of #{@table_row_counted_at}" %>
+	<br>
 	<%= @table_list if @results_count == 0%> 
 </div>
 
@@ -12,6 +14,6 @@
 	<br/>
 
 	<%= link_to "list tables", root_path %>
-	<%= "#{@results_count} results" %> 
+	<%= "#{@results_count} results in #{@query_prev ? number_with_precision(@query_prev.duration_ms.to_f / 1000, precision: 3, delimiter: ",") : "" } seconds" %> 
 	<%= @resultset %>
 </div>

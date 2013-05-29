@@ -1,22 +1,31 @@
 class QueriesController < ApplicationController
+	
+	include ActionView::Helpers::NumberHelper
 
 	def index
 		@query = Query.new
 		@resultset = nil
 		@results_count = 0
 		@table_list = db_tables.html_safe
+ 		
+ 		# refresh = params[:force] == 'true'  
+ 		# puts refresh
+ 		# @table_row_count = count_table_row(refresh)
+		# @table_row_counted_at = table_row_count_time 
+		@table_row_counted_at = nil
+		load_tables
 	end
 
 	def create
 		@query = Query.new(params[:query])
-		@query.save
 		sql = @query.sql_text
-		@query = Query.new
-		@query.sql_text = sql
 
-		puts "DB QUERY BEGIN #{Time.now}"
+		query_begin = Time.now.strftime('%s%3N').to_i
+		puts "DB QUERY BEGIN  #{Time.now}  #{}"
 		results = QueryDb.connection.execute(sql)
-		puts "DB QUERY END #{Time.now}"
+		puts "DB QUERY END  #{Time.now}  #{Time.now.strftime('%s%3N')}"
+		query_end = Time.now.strftime('%s%3N').to_i
+		@query.duration_ms = query_end - query_begin
 
 		table_oid = oid_table_name
 
@@ -48,6 +57,14 @@ class QueriesController < ApplicationController
 		end
 		table += "</table>"
 
+		@query.record_count = i
+		@query.save
+		@query_prev = @query
+
+		@query = Query.new
+		@query.sql_text = sql
+
+
 		@resultset = table.html_safe
 		@results_count = i
 
@@ -57,11 +74,24 @@ class QueriesController < ApplicationController
 	end
 
 	private
+
+		def sql_all_tables 
+			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name"
+		end
+
 		def db_tables
-			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name")
+			tables = QueryDb.connection.execute(sql_all_tables)
+			table_row_counts = count_table_row(false)
 			table_list = "<p>Tables</p><ul>"
 			tables.each do |table|
-				table_list += "<li>#{table['table_name']}</li>"
+				table_list += "<li>#{table['table_name']}"
+				if Metadata.exists?(name: table['table_name'])
+					c = Metadata.where(name: table['table_name']).first
+					table_list += " (#{number_with_delimiter(c.record_count)})"	
+				else
+					table_list += " <em>N/A</em>"
+				end
+				table_list += "</li>"
 			end
 			table_list += "</ul>"
 		end
@@ -73,6 +103,37 @@ class QueriesController < ApplicationController
 				lookup[c['oid'].to_i] = c['relname'] 
 			end
 			lookup
+		end
+
+		def count_table_row(force_refresh)
+			Rails.cache.fetch("table_row_count", :force => force_refresh) do
+				tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE '%pardot%' ORDER BY table_name")
+				table_row_counts = {}
+				tables.each do |table|
+					puts "counting #{table['table_name']} ..."
+					table_row_counts[table['table_name']] = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
+				end
+				Rails.cache.write("table_row_counted_at", DateTime.now)
+				table_row_counts
+			end
+		end
+
+		def table_row_count_time
+			Rails.cache.fetch("table_row_counted_at") do
+				count_table_row(false)
+				DateTime.now
+			end
+		end
+
+		def load_tables
+			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name not like 'dim_km_prop%' AND table_name not like 'dim_user%' ORDER BY table_name")
+			tables.each do |table|
+				unless Metadata.exists?(name: table['table_name'])
+					puts "counting #{table['table_name']} ..."
+					row_count = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
+					Metadata.create(object_type: 'table', schema: 'public', name: table['table_name'], record_count: row_count)
+				end
+			end
 		end
 
 end
