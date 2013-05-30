@@ -12,4 +12,26 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require codemirror
+//= require codemirror/modes/sql
 //= require_tree .
+
+$(function() {
+		
+		// main query editor
+		textarea = $('textarea')[0]
+		if (textarea) {
+			CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true})
+		}
+
+		recent = $('.query-sql-text')
+		if (recent) {
+			recent.each(function(i) { 
+				sql = $(this).text().trim()
+				$(this).text('')
+				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : 'nocursor', lineWrapping: true}) 
+			})
+		}
+
+	}
+)

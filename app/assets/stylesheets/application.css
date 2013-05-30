@@ -9,6 +9,8 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require codemirror
+ *= require codemirror/themes/night
  *= require_tree .
  */
 
@@ -22,4 +24,8 @@ td pre {
 
 .col-numeric {
 	text-align: right;
+}
+
+.query-sql-text .CodeMirror {
+	width: 900px;
 }

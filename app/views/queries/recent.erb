@@ -2,12 +2,12 @@
 	<% @queries.each do |query| %>
 		<tr>
 			<td>
-				<%= "#{query.created_at}" %>
+					<%= "#{query.created_at}" %>
 			</td>
 			<td>
-				<!-- <pre> -->
+				<span class="query-sql-text">
 					<%= simple_format(query.sql_text) %>
-				<!-- </pre> -->
+				</span>
 			<td>
 				<%= "#{number_with_delimiter(query.record_count)}" %>
 			</td>
