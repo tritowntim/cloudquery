@@ -4,10 +4,15 @@ Cloudquery::Application.routes.draw do
   resources :queries do
     collection do
       get 'recent'
+      get 'all'
     end
   end
 
-  resources :metadatas 
+  resources :metadatas do
+    collection do
+      get 'columns'
+    end
+  end
 
   root to: 'queries#index'
 

@@ -4,7 +4,11 @@ class QueriesController < ApplicationController
 	# include ActionView::Helpers::NumberHelpers
 
 	def recent
-		@queries = Query.order('created_at DESC').limit(120)
+		@queries = Query.order('created_at DESC').limit(50)
+	end
+
+	def all
+		@queries = Query.order('created_at DESC')
 	end
 
 	def index
@@ -131,7 +135,7 @@ class QueriesController < ApplicationController
 		end
 
 		def load_tables
-			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND TABLE_TYPE	 = 'BASE TABLE' AND table_name NOT IN ('dim_km_property','dim_km_property_group','dim_user','dim_user_current') ORDER BY table_name")
+			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND TABLE_TYPE	 = 'BASE TABLE' AND table_name LIKE 'pardot_visitor_activity%' ORDER BY table_name")
 			# Tables = {}
 			tables.each do |table|
 				puts "counting #{table['table_name']} ..."

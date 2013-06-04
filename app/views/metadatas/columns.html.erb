@@ -1,0 +1,36 @@
+<table>
+	<thead>
+		<tr>
+			<th>Table</th>
+			<th>Column</th>
+			<th>Nullable</th>
+			<th>Data Type</th>
+			<th class="col-numeric">Char Size</th>
+			<th class="col-numeric">Order</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @cols.each do |col| %>
+			<tr>
+				<td>
+					<%= "#{col['table_name']}" %>
+				</td>
+				<td>
+					<%= "#{col['column_name']}" %>
+				</td>
+				<td>
+					<%= "#{col['is_nullable']}" %>
+				</td>
+				<td>
+					<%= "#{col['data_type']}" %>
+				</td>
+				<td lass="col-numeric">
+					<%= "#{col['character_maximum_length']}" %>
+				</td>
+				<td class="col-numeric">
+					<%= "#{number_with_delimiter(col['ordinal_position'])}" %>
+				</td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

@@ -29,7 +29,7 @@ $(function() {
 			recent.each(function(i) { 
 				sql = $(this).text().trim()
 				$(this).text('')
-				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : 'nocursor', lineWrapping: true}) 
+				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : true, lineWrapping: true})
 			})
 		}
 
