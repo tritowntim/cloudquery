@@ -40,14 +40,29 @@ class QueriesController < ApplicationController
 
 		header = "<thead><tr><th/>"
 		types = "<tr><th/>"
+
 		results.fields().each_index do |i| 
-		    header += "<th>#{table_oid[results.ftable(i)]}<br>#{results.fname(i).upcase}</th>"
-		    c = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
-		    types += "<td><em>#{c}</em></td>"
+	    header += "<th>#{table_oid[results.ftable(i)]}<br>#{results.fname(i).upcase}</th>"
+	    c = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+	    types += "<td><em>#{c}</em></td>"
 		end
 
 		header += "</tr>"
 		types += "</tr></thead>"
+
+		resultset = {}
+		resultset['header'] = {}
+		head = resultset['header']
+
+	  head['table_name'] = []
+	  head['columns_name'] = []
+	  head['data_type'] = []
+
+		results.fields().each_index do |i| 
+			head['table_name'] << table_oid[results.ftable(i)]
+			head['columns_name'] << results.fname(i)
+			head['data_type'] << QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+		end
 
 		i = 0
 		table = "<table>" + header + types
@@ -66,6 +81,20 @@ class QueriesController < ApplicationController
 		end
 		table += "</table>"
 
+		resultset['det'] = []
+		det = resultset['det'] 
+
+  	results.each do |row| 
+ 			detail = [] 
+	    results.fields().each do |col|
+	    	detail << row[col].to_s
+	    end 
+			det << detail
+		end
+
+		# binding.pry
+		@results = resultset
+
 		@query.record_count = i
 		@query.save
 		@query_prev = @query
@@ -78,6 +107,9 @@ class QueriesController < ApplicationController
 		@results_count = i
 
 		@table_list = db_tables.html_safe
+
+		# @results.as_json (?)
+		# raw (to avoid escaping json)
 
 		render 'index'
 	end

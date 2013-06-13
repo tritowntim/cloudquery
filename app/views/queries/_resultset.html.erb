@@ -1,0 +1,40 @@
+
+<% if resultset %>
+
+	<table>
+		<thead>
+			<tr></tr>
+			<tr></tr>
+			<tr></tr>
+		</thead>
+		<tbody>
+			<%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
+			<% puts resultset %>
+			<tr>
+				<% resultset['header']['table_name'].each do | table | %>
+					<th><%= table %></th>
+				<% end %>
+			</tr>
+			<tr>
+				<% resultset['header']['columns_name'].each do | col | %>
+					<th><%= col %></th>
+				<% end %>
+			</tr>
+			<tr>
+				<% resultset['header']['data_type'].each do | type | %>
+					<th><%= type %></th>
+				<% end %>
+			</tr>
+			<%# TODO: refactor detail as array of hashes {column} array of objects {table name: , column name: , data type: } %>
+			<%# TODO: [ {column: value, column: value} %>
+			<% resultset['det'].each do | det | %>
+				<tr>
+					<% det.each do |field| %>
+						<td><%= field %></td>
+					<% end %>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+
+<% end %>
