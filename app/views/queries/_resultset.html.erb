@@ -9,28 +9,27 @@
 		</thead>
 		<tbody>
 			<%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
-			<% puts resultset %>
 			<tr>
-				<% resultset['header']['table_name'].each do | table | %>
-					<th><%= table %></th>
+				<% resultset['header'].each do | table | %>
+					<th><%= table['table_name'] %></th>
 				<% end %>
 			</tr>
 			<tr>
-				<% resultset['header']['columns_name'].each do | col | %>
-					<th><%= col %></th>
+				<% resultset['header'].each do | table | %>
+					<th><%= table['column_name'] %></th>
 				<% end %>
 			</tr>
 			<tr>
-				<% resultset['header']['data_type'].each do | type | %>
-					<th><%= type %></th>
+				<% resultset['header'].each do | table | %>
+					<th><%= table['data_type'] %></th>
 				<% end %>
 			</tr>
 			<%# TODO: refactor detail as array of hashes {column} array of objects {table name: , column name: , data type: } %>
 			<%# TODO: [ {column: value, column: value} %>
-			<% resultset['det'].each do | det | %>
+			<% resultset['detail'].each do | det | %>
 				<tr>
-					<% det.each do |field| %>
-						<td><%= field %></td>
+					<% det.each do |k,v| %>
+						<td><%= v %></td>
 					<% end %>
 				</tr>
 			<% end %>

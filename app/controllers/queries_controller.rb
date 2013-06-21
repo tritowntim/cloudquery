@@ -2,6 +2,11 @@
 class QueriesController < ApplicationController
 
 	# include ActionView::Helpers::NumberHelpers
+	# respond_to :html, :json
+
+	def show
+		@query = Query.find(params[:id])
+	end
 
 	def recent
 		@queries = Query.order('created_at DESC').limit(50)
@@ -36,82 +41,59 @@ class QueriesController < ApplicationController
 		query_end = Time.now.strftime('%s%3N').to_i
 		@query.duration_ms = query_end - query_begin
 
-		table_oid = oid_table_name
-
-		header = "<thead><tr><th/>"
-		types = "<tr><th/>"
-
-		results.fields().each_index do |i| 
-	    header += "<th>#{table_oid[results.ftable(i)]}<br>#{results.fname(i).upcase}</th>"
-	    c = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
-	    types += "<td><em>#{c}</em></td>"
-		end
-
-		header += "</tr>"
-		types += "</tr></thead>"
+		table_oid = oid_table_name 
 
 		resultset = {}
-		resultset['header'] = {}
-		head = resultset['header']
+		resultset['header'] = []
+		header = resultset['header']
 
-	  head['table_name'] = []
-	  head['columns_name'] = []
-	  head['data_type'] = []
+	  # head['table_name'] = []
+	  # head['columns_name'] = []
+	  # head['data_type'] = []
 
 		results.fields().each_index do |i| 
-			head['table_name'] << table_oid[results.ftable(i)]
-			head['columns_name'] << results.fname(i)
-			head['data_type'] << QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+			head = {}
+			head['column_name'] = results.fname(i)
+			head['table_name'] = table_oid[results.ftable(i)]
+			head['data_type'] = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+			header << head
 		end
 
-		i = 0
-		table = "<table>" + header + types
-  	rows = []
-  	results.each do |row|
- 			detail = "<tr>"
-			detail += "<td>#{i+=1}</td>"
-	    results.fields().each do |col|
-	    	detail += "<td>#{row[col].to_s}</td>"
-	    end 
-			detail += "</tr>"
-			rows << detail
-		end
-		rows.each do |row|
-			table += row
-		end
-		table += "</table>"
-
-		resultset['det'] = []
-		det = resultset['det'] 
+		resultset['detail'] = []
+		detail = resultset['detail'] 
 
   	results.each do |row| 
- 			detail = [] 
-	    results.fields().each do |col|
-	    	detail << row[col].to_s
+ 			det = {}
+	    row.each do |k,v|
+	    	det[k] = v.to_s
 	    end 
-			det << detail
+			detail << det
 		end
 
 		# binding.pry
 		@results = resultset
 
-		@query.record_count = i
+		@query.record_count = results.count
 		@query.save
 		@query_prev = @query
 
 		@query = Query.new
 		@query.sql_text = sql
 
-
-		@resultset = table.html_safe
-		@results_count = i
+		@results_count = results.count
 
 		@table_list = db_tables.html_safe
 
-		# @results.as_json (?)
-		# raw (to avoid escaping json)
-
-		render 'index'
+		# TODO: support natively
+		# render :json => @results
+		if sql.index('json')
+			render json: @results
+		else
+			respond_to do |format|
+				format.html { render 'index' }
+				format.json { render json: @results }
+			end
+		end
 	end
 
 	private
