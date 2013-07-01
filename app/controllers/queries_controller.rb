@@ -6,6 +6,9 @@ class QueriesController < ApplicationController
 
 	def show
 		@query = Query.find(params[:id])
+		# TODO: run query and display resultset like the default view
+		# TODO: query.original_query_id to show original query ID
+		# TODO: if resultset has been saved, display saved resultset
 	end
 
 	def recent
