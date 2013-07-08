@@ -10,6 +10,7 @@ class QueriesController < ApplicationController
 
 	def recent
 		@queries = Query.order('created_at DESC').limit(50)
+		load_tables
 	end
 
 	def all
@@ -99,7 +100,7 @@ class QueriesController < ApplicationController
 	private
 
 		def sql_all_tables 
-			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type	 = 'BASE TABLE' ORDER BY table_name"
+			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name"
 		end
 
 		def db_tables
@@ -149,7 +150,7 @@ class QueriesController < ApplicationController
 		end
 
 		def load_tables
-			tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND TABLE_TYPE	 = 'BASE TABLE' AND table_name LIKE 'pardot_visitor_activity%' ORDER BY table_name")
+			tables = QueryDb.connection.execute(sql_all_tables)
 			# Tables = {}
 			tables.each do |table|
 				puts "counting #{table['table_name']} ..."
@@ -161,7 +162,7 @@ class QueriesController < ApplicationController
 					m.size_bytes = size_bytes
 					m.save
 				else
-					Metadata.create(object_type: 'table', schema: 'public', name: table['table_name'], record_count: row_count)
+					Metadata.create(object_type: 'table', schema: 'public', name: table['table_name'], record_count: row_count, size_bytes: size_bytes)
 				end
 			end
 		end
