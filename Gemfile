@@ -25,6 +25,7 @@ gem 'jquery-rails'
 gem 'codemirror-rails'
 
 gem 'unicorn'
+# gem 'unicorn-rails'
 
 group :development do
 	gem 'pry-rails'

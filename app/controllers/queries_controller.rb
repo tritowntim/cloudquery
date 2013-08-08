@@ -161,6 +161,7 @@ class QueriesController < ApplicationController
 					m.record_count = row_count
 					m.size_bytes = size_bytes
 					m.save
+					m.touch
 				else
 					Metadata.create(object_type: 'table', schema: 'public', name: table['table_name'], record_count: row_count, size_bytes: size_bytes)
 				end
