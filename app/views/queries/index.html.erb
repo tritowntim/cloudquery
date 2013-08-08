@@ -12,6 +12,7 @@
 	<br/>
 
 	<%= link_to "list tables", root_path %>
+	<%= @query_prev ? "(query ID #{@query_prev.id})" : "" %>
 	<%= "#{@results_count} results in #{@query_prev ? number_with_precision(@query_prev.duration_ms.to_f / 1000, precision: 3, delimiter: ",") : "" } seconds" %> 
 
 	<%= render partial: 'resultset', locals: {resultset: @results} %>
