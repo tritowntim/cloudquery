@@ -13,22 +13,22 @@
 		<% @cols.each do |col| %>
 			<tr>
 				<td>
-					<%= "#{col['table_name']}" %>
+					<%= "#{col[:table_name]}" %>
 				</td>
 				<td>
-					<%= "#{col['column_name']}" %>
+					<%= "#{col[:column_name]}" %>
 				</td>
 				<td>
-					<%= "#{col['is_nullable']}" %>
+					<%= "#{col[:is_nullable]}" %>
 				</td>
 				<td>
-					<%= "#{col['data_type']}" %>
+					<%= "#{col[:data_type]}" %>
 				</td>
 				<td lass="col-numeric">
-					<%= "#{col['character_maximum_length']}" %>
+					<%= "#{col[:character_maximum_length]}" %>
 				</td>
 				<td class="col-numeric">
-					<%= "#{number_with_delimiter(col['ordinal_position'])}" %>
+					<%= "#{number_with_delimiter(col[:ordinal_position])}" %>
 				</td>
 			</tr>
 		<% end %>

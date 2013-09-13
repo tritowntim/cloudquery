@@ -1,7 +1,7 @@
 class MetadatasController < ApplicationController
 
 	def index
-		@metadatas = Metadata.order('size_bytes DESC')
+		@metadatas = Metadata.order(:size_bytes).reverse
 	end
 
 	def columns
@@ -14,7 +14,7 @@ class MetadatasController < ApplicationController
 			  ORDER BY c.table_name, c.ordinal_position
 		SQL
 
-		@cols = QueryDb.connection.execute(sql)
+		@cols = QUERY_DB[sql].all
 	end
 
 end

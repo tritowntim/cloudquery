@@ -5,7 +5,7 @@
 
 <div>
 	
-	<%= form_for :query do |f| %>
+	<%= form_for @query do |f| %>
 		<%= f.text_area :sql_text, rows: 10, cols: 120 %>
 		<%= f.submit 'query' %>
 	<% end %>
