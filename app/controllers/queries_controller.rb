@@ -25,17 +25,17 @@ class QueriesController < ApplicationController
 		@resultset = nil
 		@results_count = 0
 		@table_list = db_tables.html_safe
- 		
- 		# refresh = params[:force] == 'true'  
+
+ 		# refresh = params[:force] == 'true'
  		# puts refresh
  		# @table_row_count = count_table_row(refresh)
-		# @table_row_counted_at = table_row_count_time 
+		# @table_row_counted_at = table_row_count_time
 		@table_row_counted_at = nil
 		# load_tables
 	end
 
 	def create
-		@query = Query.new(params[:query])
+		@query = Query.new(query_params)
 		sql = @query.sql_text
 
 		query_begin = Time.now.strftime('%s%3N').to_i
@@ -45,7 +45,7 @@ class QueriesController < ApplicationController
 		query_end = Time.now.strftime('%s%3N').to_i
 		@query.duration_ms = query_end - query_begin
 
-		table_oid = oid_table_name 
+		table_oid = oid_table_name
 
 		resultset = {}
 		resultset['header'] = []
@@ -55,7 +55,7 @@ class QueriesController < ApplicationController
 	  # head['columns_name'] = []
 	  # head['data_type'] = []
 
-		results.fields().each_index do |i| 
+		results.fields().each_index do |i|
 			head = {}
 			head['column_name'] = results.fname(i)
 			head['table_name'] = table_oid[results.ftable(i)]
@@ -64,13 +64,13 @@ class QueriesController < ApplicationController
 		end
 
 		resultset['detail'] = []
-		detail = resultset['detail'] 
+		detail = resultset['detail']
 
-  	results.each do |row| 
+  	results.each do |row|
  			det = {}
 	    row.each do |k,v|
 	    	det[k] = v.to_s
-	    end 
+	    end
 			detail << det
 		end
 
@@ -102,7 +102,7 @@ class QueriesController < ApplicationController
 
 	private
 
-		def sql_all_tables 
+		def sql_all_tables
 			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name"
 		end
 
@@ -114,7 +114,7 @@ class QueriesController < ApplicationController
 				table_list += "<li>#{table['table_name']}"
 				if Metadata.exists?(name: table['table_name'])
 					c = Metadata.where(name: table['table_name']).first
-					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(c.record_count)})"	
+					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(c.record_count)})"
 				else
 					table_list += " <em>N/A</em>"
 				end
@@ -127,7 +127,7 @@ class QueriesController < ApplicationController
 			lookup = {}
 			pg_class = QueryDb.connection.execute("SELECT relname, oid FROM pg_class")
 			pg_class.each do |c|
-				lookup[c['oid'].to_i] = c['relname'] 
+				lookup[c['oid'].to_i] = c['relname']
 			end
 			lookup
 		end
@@ -158,7 +158,7 @@ class QueriesController < ApplicationController
 			tables.each do |table|
 				puts "counting #{table['table_name']} ..."
 				row_count = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
-				size_bytes = QueryDb.connection.execute("SELECT PG_TOTAL_RELATION_SIZE('#{table['table_name']}')")[0]['pg_total_relation_size']				
+				size_bytes = QueryDb.connection.execute("SELECT PG_TOTAL_RELATION_SIZE('#{table['table_name']}')")[0]['pg_total_relation_size']
 				if Metadata.exists?(name: table['table_name'])
 					m = Metadata.where(name: table['table_name']).first
 					m.record_count = row_count
@@ -169,6 +169,10 @@ class QueriesController < ApplicationController
 					Metadata.create(object_type: 'table', schema: 'public', name: table['table_name'], record_count: row_count, size_bytes: size_bytes)
 				end
 			end
+		end
+
+		def query_params
+	    params.require(:query).permit(:id, :sql_text, :duration_ms, :record_count)
 		end
 
 end
