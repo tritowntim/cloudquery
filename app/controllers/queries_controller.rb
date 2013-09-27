@@ -66,10 +66,12 @@ class QueriesController < ApplicationController
 		resultset['detail'] = []
 		detail = resultset['detail']
 
-  	results.each do |row|
+  	results.each_row do |row|
  			det = {}
-	    row.each do |k,v|
-	    	det[k] = v.to_s
+ 			i = 0
+	    row.each do |v|
+	    	det["#{i}"] = v.to_s
+	    	i = i + 1
 	    end
 			detail << det
 		end
