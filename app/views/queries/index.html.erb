@@ -1,10 +1,14 @@
 
 <div class="sidebar">
-	<%= @table_list if @results_count == 0%> 
+	<%= @table_list if @results_count == 0%>
 </div>
 
 <div>
-	
+	<% @db_list.each do |db_name| %>
+		<%= link_to db_name, "/#{db_name}/queries" %>
+	<% end %>
+
+
 	<%= form_for :query do |f| %>
 		<%= f.text_area :sql_text, rows: 10, cols: 120 %>
 		<%= f.submit 'query' %>
@@ -13,7 +17,7 @@
 
 	<%= link_to "list tables", root_path %>
 	<%= @query_prev ? "(query ID #{@query_prev.id})" : "" %>
-	<%= "#{@results_count} results in #{@query_prev ? number_with_precision(@query_prev.duration_ms.to_f / 1000, precision: 3, delimiter: ",") : "" } seconds" %> 
+	<%= "#{@results_count} results in #{@query_prev ? number_with_precision(@query_prev.duration_ms.to_f / 1000, precision: 3, delimiter: ",") : "" } seconds" %>
 
 	<%= render partial: 'resultset', locals: {resultset: @results} %>
 </div>
