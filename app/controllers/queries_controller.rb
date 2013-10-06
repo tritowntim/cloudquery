@@ -114,7 +114,7 @@ class QueriesController < ApplicationController
 			# tables = QueryDb.get_connection(params['db_name']).execute(sql_all_tables)
 			# table_row_counts = count_table_row(false)
 			table_list = "<p>Tables</p><ul>"
-      tables = Metadata.list_tables
+      tables = Metadata.list_tables(params['db_name'])
 			tables.each do |table|
 				table_list += "<li>#{table.name}"
 				# if Metadata.exists?(name: table.name)

@@ -1,6 +1,5 @@
 Cloudquery::Application.routes.draw do
 
-  # post 'query' => 'queries#query'
   Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults test query_db}.include? key }.each do |key|
     resources :queries, path: "#{key}/queries", db_name: key do
       collection do
@@ -19,7 +18,7 @@ Cloudquery::Application.routes.draw do
   get 'all/metadatas', controller: 'metadatas', action: 'index', db_name: 'all'
   get 'all/metadatas/refresh', controller: 'metadatas', action: 'refresh', db_name: 'all'
 
-  root to: 'queries#index'
+  root to: redirect("/#{Rails.configuration.database_configuration['query_db']['database']}/queries")
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
