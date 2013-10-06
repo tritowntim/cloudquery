@@ -1,2 +1,27 @@
 class Metadata < ActiveRecord::Base
+
+    def self.list_tables(db_name)
+      tables = QueryDb.get_connection(db_name).execute(sql_all_tables)
+      tables.each do |table|
+        Metadata.find_or_create_by(db: db_name, name: table['table_name'], object_type: 'table', schema: 'public')
+      end
+      Metadata.where(db: db_name)
+    end
+
+    def self.get_table_stats(db_name)
+      list_tables(db_name).each do |table|
+        table.record_count = QueryDb.get_connection(db_name).execute("SELECT COUNT(1) FROM #{table.name}")[0]['count']
+        table.size_bytes = QueryDb.get_connection(db_name).execute("SELECT PG_TOTAL_RELATION_SIZE('#{table.name}')")[0]['pg_total_relation_size']
+        table.touch
+        table.save
+      end
+    end
+
+    def self.sql_all_tables
+      "SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name"
+    end
+
+    def self.all_databases
+      Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults test query_db}.include? key }
+    end
 end

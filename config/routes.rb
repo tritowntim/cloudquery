@@ -6,15 +6,18 @@ Cloudquery::Application.routes.draw do
       collection do
         get 'recent'
         get 'all'
-        get 'count'
       end
     end
     resources :metadatas, path: "#{key}/metadatas", db_name: key do
       collection do
         get 'columns'
+        get 'refresh'
       end
     end
   end
+
+  get 'all/metadatas', controller: 'metadatas', action: 'index', db_name: 'all'
+  get 'all/metadatas/refresh', controller: 'metadatas', action: 'refresh', db_name: 'all'
 
   root to: 'queries#index'
 
