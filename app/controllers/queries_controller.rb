@@ -20,6 +20,11 @@ class QueriesController < ApplicationController
 		@queries = Query.order('created_at DESC')
 	end
 
+  def count
+    count_records
+    redirect_to action: index
+  end
+
 	def index
 		@query = Query.new
 		@resultset = nil
@@ -110,14 +115,15 @@ class QueriesController < ApplicationController
 		end
 
 		def db_tables
-			tables = QueryDb.get_connection(params['db_name']).execute(sql_all_tables)
-			table_row_counts = count_table_row(false)
+			# tables = QueryDb.get_connection(params['db_name']).execute(sql_all_tables)
+			# table_row_counts = count_table_row(false)
 			table_list = "<p>Tables</p><ul>"
+      tables = list_tables
 			tables.each do |table|
-				table_list += "<li>#{table['table_name']}"
-				if Metadata.exists?(name: table['table_name'])
-					c = Metadata.where(name: table['table_name']).first
-					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(c.record_count)})"
+				table_list += "<li>#{table.name}"
+				# if Metadata.exists?(name: table.name)
+        if table.record_count
+					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(table.record_count)})"
 				else
 					table_list += " <em>N/A</em>"
 				end
@@ -174,6 +180,23 @@ class QueriesController < ApplicationController
 			end
 		end
 
+    def list_tables
+      db_name = params['db_name']
+      tables = QueryDb.get_connection(db_name).execute(sql_all_tables)
+      tables.each do |table|
+        Metadata.find_or_create_by(db: db_name, name: table['table_name'], object_type: 'table', schema: 'public')
+      end
+      Metadata.where(db: db_name)
+    end
+
+    def count_records
+      list_tables.each do |table|
+        table.record_count = QueryDb.get_connection(params['db_name']).execute("SELECT COUNT(1) FROM #{table.name}")[0]['count']
+        table.touch
+        table.save
+      end
+    end
+
 		def query_params
 	    params.require(:query).permit(:id, :sql_text, :duration_ms, :record_count)
 		end
@@ -183,6 +206,6 @@ class QueriesController < ApplicationController
     end
 
     def list_db
-      @db_list = Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults development test query_db}.include? key }
+      @db_list = Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults test query_db}.include? key }
     end
 end

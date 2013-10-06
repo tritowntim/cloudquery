@@ -1,11 +1,12 @@
 Cloudquery::Application.routes.draw do
 
   # post 'query' => 'queries#query'
-  Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults development test query_db}.include? key }.each do |key|
+  Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults test query_db}.include? key }.each do |key|
     resources :queries, path: "#{key}/queries", db_name: key do
       collection do
         get 'recent'
         get 'all'
+        get 'count'
       end
     end
     resources :metadatas, path: "#{key}/metadatas", db_name: key do
