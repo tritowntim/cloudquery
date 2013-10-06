@@ -8,14 +8,13 @@
 		<%= link_to db_name, "/#{db_name}/queries" %>
 	<% end %>
 
-
 	<%= form_for :query do |f| %>
 		<%= f.text_area :sql_text, rows: 10, cols: 120 %>
 		<%= f.submit 'query' %>
 	<% end %>
 	<br/>
 
-	<%= link_to "list tables", root_path %>
+	<%= link_to "list tables", "/#{params['db_name']}/queries" %>
 	<%= @query_prev ? "(query ID #{@query_prev.id})" : "" %>
 	<%= "#{@results_count} results in #{@query_prev ? number_with_precision(@query_prev.duration_ms.to_f / 1000, precision: 3, delimiter: ",") : "" } seconds" %>
 

@@ -1,5 +1,5 @@
-
 class QueriesController < ApplicationController
+  before_action :default_db, :list_db
 
 	# include ActionView::Helpers::NumberHelpers
 	# respond_to :html, :json
@@ -21,9 +21,6 @@ class QueriesController < ApplicationController
 	end
 
 	def index
-		puts "#{params['db_name']}!!!"
-		@db_list = Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults development test query_db}.include? key }
-
 		@query = Query.new
 		@resultset = nil
 		@results_count = 0
@@ -43,7 +40,8 @@ class QueriesController < ApplicationController
 
 		query_begin = Time.now.strftime('%s%3N').to_i
 		puts "DB QUERY BEGIN  #{Time.now}  #{}"
-		results = QueryDb.connection(params['db_name']).execute(sql)
+    puts params['db_name']
+		results = QueryDb.get_connection(params['db_name']).execute(sql)
 		puts "DB QUERY END  #{Time.now}  #{Time.now.strftime('%s%3N')}"
 		query_end = Time.now.strftime('%s%3N').to_i
 		@query.duration_ms = query_end - query_begin
@@ -62,7 +60,7 @@ class QueriesController < ApplicationController
 			head = {}
 			head['column_name'] = results.fname(i)
 			head['table_name'] = table_oid[results.ftable(i)]
-			head['data_type'] = QueryDb.connection(params['db_name']).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+			head['data_type'] = QueryDb.get_connection(params['db_name']).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
 			header << head
 		end
 
@@ -180,4 +178,11 @@ class QueriesController < ApplicationController
 	    params.require(:query).permit(:id, :sql_text, :duration_ms, :record_count)
 		end
 
+		def default_db
+      params['db_name'] = Rails.configuration.database_configuration['query_db']['database'] unless params['db_name']
+    end
+
+    def list_db
+      @db_list = Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults development test query_db}.include? key }
+    end
 end

@@ -2,19 +2,16 @@ Cloudquery::Application.routes.draw do
 
   # post 'query' => 'queries#query'
   Rails.configuration.database_configuration.keys.select { |key| ! %w{defaults development test query_db}.include? key }.each do |key|
-    # namespace key do
-      resources :queries, path: "#{key}/queries", db_name: key do
-        collection do
-          get 'recent'
-          get 'all'
-        end
+    resources :queries, path: "#{key}/queries", db_name: key do
+      collection do
+        get 'recent'
+        get 'all'
       end
-    # end
-  end
-
-  resources :metadatas do
-    collection do
-      get 'columns'
+    end
+    resources :metadatas, path: "#{key}/metadatas", db_name: key do
+      collection do
+        get 'columns'
+      end
     end
   end
 
