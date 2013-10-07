@@ -84,8 +84,7 @@ class QueriesController < ApplicationController
 
 		@results_count = results.count
 
-		@table_list = db_tables.html_safe
-		@table_list =
+		@table_list = Metadata.list_tables(params['db_name'])
 
 		# TODO: support natively
 		# render :json => @results
