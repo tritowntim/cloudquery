@@ -1,4 +1,8 @@
 class QueryDb < ActiveRecord::Base
   self.abstract_class = true
-  establish_connection "query_db"
+
+  def self.get_connection(database_conn_name)
+    establish_connection database_conn_name
+    self.connection
+  end
 end

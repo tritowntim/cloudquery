@@ -1,5 +1,5 @@
-
 class QueriesController < ApplicationController
+  before_action :default_db, :list_db
 
 	# include ActionView::Helpers::NumberHelpers
 	# respond_to :html, :json
@@ -19,6 +19,7 @@ class QueriesController < ApplicationController
 	def all
 		@queries = Query.order('created_at DESC')
 	end
+
 
 	def index
 		@query = Query.new
@@ -40,7 +41,8 @@ class QueriesController < ApplicationController
 
 		query_begin = Time.now.strftime('%s%3N').to_i
 		puts "DB QUERY BEGIN  #{Time.now}  #{}"
-		results = QueryDb.connection.execute(sql)
+    puts params['db_name']
+		results = QueryDb.get_connection(params['db_name']).execute(sql)
 		puts "DB QUERY END  #{Time.now}  #{Time.now.strftime('%s%3N')}"
 		query_end = Time.now.strftime('%s%3N').to_i
 		@query.duration_ms = query_end - query_begin
@@ -59,7 +61,7 @@ class QueriesController < ApplicationController
 			head = {}
 			head['column_name'] = results.fname(i)
 			head['table_name'] = table_oid[results.ftable(i)]
-			head['data_type'] = QueryDb.connection.execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+			head['data_type'] = QueryDb.get_connection(params['db_name']).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
 			header << head
 		end
 
@@ -109,14 +111,15 @@ class QueriesController < ApplicationController
 		end
 
 		def db_tables
-			tables = QueryDb.connection.execute(sql_all_tables)
-			table_row_counts = count_table_row(false)
+			# tables = QueryDb.get_connection(params['db_name']).execute(sql_all_tables)
+			# table_row_counts = count_table_row(false)
 			table_list = "<p>Tables</p><ul>"
+      tables = Metadata.list_tables(params['db_name'])
 			tables.each do |table|
-				table_list += "<li>#{table['table_name']}"
-				if Metadata.exists?(name: table['table_name'])
-					c = Metadata.where(name: table['table_name']).first
-					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(c.record_count)})"
+				table_list += "<li>#{table.name}"
+				# if Metadata.exists?(name: table.name)
+        if table.record_count
+					table_list += " (#{ActionController::Base.helpers.number_with_delimiter(table.record_count)})"
 				else
 					table_list += " <em>N/A</em>"
 				end
@@ -127,7 +130,7 @@ class QueriesController < ApplicationController
 
 		def oid_table_name
 			lookup = {}
-			pg_class = QueryDb.connection.execute("SELECT relname, oid FROM pg_class")
+			pg_class = QueryDb.get_connection(params['db_name']).execute("SELECT relname, oid FROM pg_class")
 			pg_class.each do |c|
 				lookup[c['oid'].to_i] = c['relname']
 			end
@@ -136,11 +139,11 @@ class QueriesController < ApplicationController
 
 		def count_table_row(force_refresh)
 			Rails.cache.fetch("table_row_count", :force => force_refresh) do
-				tables = QueryDb.connection.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE '%pardot%' ORDER BY table_name")
+				tables = QueryDb.get_connection(params['db_name']).execute("SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE '%pardot%' ORDER BY table_name")
 				table_row_counts = {}
 				tables.each do |table|
 					puts "counting #{table['table_name']} ..."
-					table_row_counts[table['table_name']] = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
+					table_row_counts[table['table_name']] = QueryDb.get_connection(params['db_name']).execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
 				end
 				Rails.cache.write("table_row_counted_at", DateTime.now)
 				table_row_counts
@@ -155,12 +158,12 @@ class QueriesController < ApplicationController
 		end
 
 		def load_tables
-			tables = QueryDb.connection.execute(sql_all_tables)
+			tables = QueryDb.get_connection(params['db_name']).execute(sql_all_tables)
 			# Tables = {}
 			tables.each do |table|
 				puts "counting #{table['table_name']} ..."
-				row_count = QueryDb.connection.execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
-				size_bytes = QueryDb.connection.execute("SELECT PG_TOTAL_RELATION_SIZE('#{table['table_name']}')")[0]['pg_total_relation_size']
+				row_count = QueryDb.get_connection(params['db_name']).execute("SELECT COUNT(1) FROM #{table['table_name']}")[0]['count']
+				size_bytes = QueryDb.get_connection(params['db_name']).execute("SELECT PG_TOTAL_RELATION_SIZE('#{table['table_name']}')")[0]['pg_total_relation_size']
 				if Metadata.exists?(name: table['table_name'])
 					m = Metadata.where(name: table['table_name']).first
 					m.record_count = row_count
@@ -176,5 +179,4 @@ class QueriesController < ApplicationController
 		def query_params
 	    params.require(:query).permit(:id, :sql_text, :duration_ms, :record_count)
 		end
-
 end
