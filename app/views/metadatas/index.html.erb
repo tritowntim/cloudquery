@@ -1,6 +1,19 @@
+<% @db_list.each do |db_name| %>
+	<%= link_to db_name, "/#{db_name}/metadatas" %>
+<% end %>
+<%= link_to 'all', all_metadatas_path %>
+
+<% if params['db_name'] == 'all' %>
+	<%= link_to 'refresh', all_metadatas_refresh_path %>
+<% else %>
+	<%= link_to 'refresh', "/#{params['db_name']}/metadatas/refresh" %>
+<% end %>
+
+
 <table>
 	<thead>
 		<tr>
+			<th>Database</th>
 			<th>Table</th>
 			<th class="col-numeric">Record Count</th>
 			<th class="col-numeric">Size</th>
@@ -11,6 +24,9 @@
 	<tbody>
 		<% @metadatas.each do |metadata| %>
 			<tr>
+				<td>
+					<%= "#{metadata.db}" %>
+				</td>
 				<td>
 					<%= "#{metadata.name}" %>
 				</td>
