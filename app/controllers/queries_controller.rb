@@ -100,10 +100,6 @@ class QueriesController < ApplicationController
 
 	private
 
-		def sql_all_tables
-			"SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name"
-		end
-
 		def oid_table_name
 			lookup = {}
 			pg_class = QueryDb.get_connection(params['db_name']).execute("SELECT relname, oid FROM pg_class")
