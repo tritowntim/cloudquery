@@ -2,7 +2,7 @@
 	<% @queries.each do |query| %>
 		<tr>
 			<td>
-					<%= "#{query.id}" %>
+					<%= link_to query.id, "/#{@db_name}/queries/#{query.id}" %>
 			</td>
 			<td>
 					<%= "#{query.created_at}" %>

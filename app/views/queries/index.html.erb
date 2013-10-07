@@ -1,6 +1,6 @@
 
 <div class="sidebar">
-	<% if @results_count == 0 %>
+	<% if !@results || @results['detail'].count == 0 %>
 		<%= render partial: 'shared/table_list', locals: {table_list: @table_list} %>
 	<% end %>
 </div>
@@ -10,15 +10,29 @@
 		<%= link_to db_name, "/#{db_name}/queries" %>
 	<% end %>
 
-	<%= form_for :query do |f| %>
+	<%= form_for :query, url: "/#{@db_name}/queries" do |f| %>
 		<%= f.text_area :sql_text, rows: 10, cols: 120 %>
 		<%= f.submit 'query' %>
 	<% end %>
 	<br/>
 
-	<%= link_to "list tables", "/#{params['db_name']}/queries" %>
-	<%= @query_prev ? "(query ID #{@query_prev.id})" : "" %>
-	<%= "#{@results_count} results in #{@query_prev ? number_with_precision(@query_prev.duration_ms.to_f / 1000, precision: 3, delimiter: ",") : "" } seconds" %>
+	<%= link_to "list tables", "/#{@db_name}/queries" %>
+	<%= link_to "recent queries", "/#{@db_name}/queries/recent" %>
+
+	<% if @results %>
+		<br>
+		Retrieved <%= @query.record_count %> records
+		in <%= number_with_precision(@query.duration_ms.to_f / 1000, precision: 3, delimiter: ",") %> seconds
+		(query <%= @query.id %>)
+	<% end %>
+
+	<% if @original_query %>
+		<br>
+		Retrieved <%= @original_query.record_count %> records
+		in <%= number_with_precision(@original_query.duration_ms.to_f / 1000, precision: 3, delimiter: ",") %> seconds
+		(query <%= @original_query.id %>)
+ 		originally at <%= @original_query.created_at %>
+	<% end %>
 
 	<%= render partial: 'resultset', locals: {resultset: @results} %>
 </div>

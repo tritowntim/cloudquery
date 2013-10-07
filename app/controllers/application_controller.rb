@@ -2,7 +2,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def default_db
-    params['db_name'] = Rails.configuration.database_configuration['query_db']['database'] unless params['db_name']
+    @db_name = if params['db_name']
+      params['db_name']
+    else
+      Rails.configuration.database_configuration['query_db']['database']
+    end
   end
 
   def list_db

@@ -5,14 +5,16 @@ class QueriesController < ApplicationController
 	# respond_to :html, :json
 
 	def show
-		@query = Query.find(params[:id])
+		@original_query = Query.find(params[:id])
+		@query = Query.new(sql_text: @original_query.sql_text)
+		manage_query
 		# TODO: run query and display resultset like the default view
 		# TODO: query.original_query_id to show original query ID
 		# TODO: if resultset has been saved, display saved resultset
 	end
 
 	def recent
-		@queries = Query.order('created_at DESC').limit(50)
+		@queries = Query.where(db: @db_name).order('created_at DESC').limit(50)
 	end
 
 	def all
@@ -24,19 +26,48 @@ class QueriesController < ApplicationController
 		@query = Query.new
 		@resultset = nil
 		@results_count = 0
-		@table_list = Metadata.list_tables(params['db_name'])
+		@table_list = Metadata.list_tables(@db_name)
 
 		@table_row_counted_at = nil
 	end
 
 	def create
 		@query = Query.new(query_params)
+		manage_query
+	end
+
+	private
+
+	def manage_query
 		sql = @query.sql_text
 
+		@results = execute_query(sql)
+
+		@query.record_count = @results['detail'].count
+		@query.db = @db_name
+		@query.save
+
+		@new_query = Query.new
+		@new_query.sql_text = sql
+
+		@table_list = Metadata.list_tables(@db_name)
+
+		# TODO: support natively
+		# render :json => @results
+		if sql.index('json')
+			render json: @results
+		else
+			respond_to do |format|
+				format.html { render 'index' }
+				format.json { render json: @results }
+			end
+		end
+	end
+
+	def execute_query(sql)
 		query_begin = Time.now.strftime('%s%3N').to_i
 		puts "DB QUERY BEGIN  #{Time.now}  #{}"
-    puts params['db_name']
-		results = QueryDb.get_connection(params['db_name']).execute(sql)
+		results = QueryDb.get_connection(@db_name).execute(sql)
 		puts "DB QUERY END  #{Time.now}  #{Time.now.strftime('%s%3N')}"
 		query_end = Time.now.strftime('%s%3N').to_i
 		@query.duration_ms = query_end - query_begin
@@ -55,7 +86,7 @@ class QueriesController < ApplicationController
 			head = {}
 			head['column_name'] = results.fname(i)
 			head['table_name'] = table_oid[results.ftable(i)]
-			head['data_type'] = QueryDb.get_connection(params['db_name']).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+			head['data_type'] = QueryDb.get_connection(@db_name).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
 			header << head
 		end
 
@@ -72,37 +103,12 @@ class QueriesController < ApplicationController
 			detail << det
 		end
 
-		# binding.pry
-		@results = resultset
-
-		@query.record_count = results.count
-		@query.save
-		@query_prev = @query
-
-		@query = Query.new
-		@query.sql_text = sql
-
-		@results_count = results.count
-
-		@table_list = Metadata.list_tables(params['db_name'])
-
-		# TODO: support natively
-		# render :json => @results
-		if sql.index('json')
-			render json: @results
-		else
-			respond_to do |format|
-				format.html { render 'index' }
-				format.json { render json: @results }
-			end
-		end
+		resultset
 	end
-
-	private
 
 		def oid_table_name
 			lookup = {}
-			pg_class = QueryDb.get_connection(params['db_name']).execute("SELECT relname, oid FROM pg_class")
+			pg_class = QueryDb.get_connection(@db_name).execute("SELECT relname, oid FROM pg_class")
 			pg_class.each do |c|
 				lookup[c['oid'].to_i] = c['relname']
 			end

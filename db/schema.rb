@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131006194519) do
+ActiveRecord::Schema.define(version: 20131007015944) do
 
   create_table "metadata", force: true do |t|
     t.string   "object_type"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20131006194519) do
     t.datetime "updated_at",   null: false
     t.integer  "record_count"
     t.integer  "duration_ms"
+    t.string   "db"
   end
 
 end
