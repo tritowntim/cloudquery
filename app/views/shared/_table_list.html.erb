@@ -1,0 +1,14 @@
+
+<p>Tables</p>
+<ul>
+  <% table_list.each do |table| %>
+    <li>
+      <%= table.name %>
+      <% if table.record_count %>
+        <%= number_with_delimiter table.record_count %>
+      <% else %>
+        <em>N/A</em>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

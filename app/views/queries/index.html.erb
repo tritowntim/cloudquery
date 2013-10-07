@@ -1,6 +1,8 @@
 
 <div class="sidebar">
-	<%= @table_list if @results_count == 0%>
+	<% if @results_count == 0 %>
+		<%= render partial: 'shared/table_list', locals: {table_list: @table_list} %>
+	<% end %>
 </div>
 
 <div>
