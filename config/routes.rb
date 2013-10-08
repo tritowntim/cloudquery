@@ -20,6 +20,8 @@ Cloudquery::Application.routes.draw do
 
   root to: redirect("/#{Rails.configuration.database_configuration['query_db']['database']}/queries")
 
+  resources :databases, only: [:index, :show]
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
