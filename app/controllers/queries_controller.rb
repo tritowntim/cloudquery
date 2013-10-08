@@ -1,20 +1,24 @@
 class QueriesController < ApplicationController
-  before_action :default_db, :list_db
+  before_action :default_db, :list_db, :table_list
 
 	# include ActionView::Helpers::NumberHelpers
 	# respond_to :html, :json
 
 	def show
-		@original_query = Query.find(params[:id])
-		@query = Query.new(sql_text: @original_query.sql_text)
-		manage_query
+		# @database = Database.find(params[:database_id])
+		# @original_query = Query.find(params[:id])
+		# @query = Query.new(sql_text: @original_query.sql_text)
+		# manage_query
 		# TODO: run query and display resultset like the default view
 		# TODO: query.original_query_id to show original query ID
 		# TODO: if resultset has been saved, display saved resultset
+		@database = Database.find(params[:database_id])
+		@query = Query.find(params[:id])
+		manage_query
 	end
 
 	def recent
-		@queries = Query.where(db: @db_name).order('created_at DESC').limit(50)
+		@queries = Query.where(db: @database.id).order('created_at DESC').limit(50)
 	end
 
 	def all
@@ -22,18 +26,34 @@ class QueriesController < ApplicationController
 	end
 
 
+	# def index
+	# 	@query = Query.new
+	# 	@resultset = nil
+	# 	@results_count = 0
+	# 	@table_list = Metadata.list_tables(@database.id)
+
+	# 	@table_row_counted_at = nil
+	# end
+
 	def index
-		@query = Query.new
+		@database = Database.find(params[:database_id])
+
+		@query = @database.queries.new
 		@resultset = nil
 		@results_count = 0
-		@table_list = Metadata.list_tables(@db_name)
+		# @table_list = Metadata.list_tables(@db_name)
 
 		@table_row_counted_at = nil
 	end
 
 	def create
-		@query = Query.new(query_params)
-		manage_query
+		@database = Database.find(params[:database_id])
+		@query = @database.queries.create(query_params)
+		# manage_query
+					respond_to do |format|
+				format.html { redirect_to database_query_url(@database.id, @query.id) }
+				format.json { render json: @results }
+			end
 	end
 
 	private
@@ -50,24 +70,24 @@ class QueriesController < ApplicationController
 		@new_query = Query.new
 		@new_query.sql_text = sql
 
-		@table_list = Metadata.list_tables(@db_name)
+		# @table_list = Metadata.list_tables(@db_name)
 
 		# TODO: support natively
 		# render :json => @results
-		if sql.index('json')
-			render json: @results
-		else
-			respond_to do |format|
-				format.html { render 'index' }
-				format.json { render json: @results }
-			end
-		end
+		# if sql.index('json')
+		# 	render json: @results
+		# else
+		# 	respond_to do |format|
+		# 		format.html { redirect_to database_query_url(@database.id, @query.id) }
+		# 		format.json { render json: @results }
+		# 	end
+		# end
 	end
 
 	def execute_query(sql)
 		query_begin = Time.now.strftime('%s%3N').to_i
 		puts "DB QUERY BEGIN  #{Time.now}  #{}"
-		results = QueryDb.get_connection(@db_name).execute(sql)
+		results = QueryDb.get_connection(@database.id).execute(sql)
 		puts "DB QUERY END  #{Time.now}  #{Time.now.strftime('%s%3N')}"
 		query_end = Time.now.strftime('%s%3N').to_i
 		@query.duration_ms = query_end - query_begin
@@ -86,7 +106,7 @@ class QueriesController < ApplicationController
 			head = {}
 			head['column_name'] = results.fname(i)
 			head['table_name'] = table_oid[results.ftable(i)]
-			head['data_type'] = QueryDb.get_connection(@db_name).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+			head['data_type'] = QueryDb.get_connection(@database.id).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
 			header << head
 		end
 
@@ -108,7 +128,7 @@ class QueriesController < ApplicationController
 
 		def oid_table_name
 			lookup = {}
-			pg_class = QueryDb.get_connection(@db_name).execute("SELECT relname, oid FROM pg_class")
+			pg_class = QueryDb.get_connection(@database.id).execute("SELECT relname, oid FROM pg_class")
 			pg_class.each do |c|
 				lookup[c['oid'].to_i] = c['relname']
 			end
@@ -116,6 +136,10 @@ class QueriesController < ApplicationController
 		end
 
 		def query_params
-	    params.require(:query).permit(:id, :sql_text, :duration_ms, :record_count)
+	    params.require(:query).permit(:sql_text)
 		end
+
+		def table_list
+    	@table_list = Metadata.list_tables(params[:database_id])
+  	end
 end

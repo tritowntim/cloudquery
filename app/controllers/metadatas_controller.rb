@@ -2,11 +2,13 @@ class MetadatasController < ApplicationController
   before_action :default_db, :list_db
 
 	def index
-		if params['db_name'] == 'all'
-			@metadatas = Metadata.order('size_bytes DESC')
-		else
-			@metadatas = Metadata.where(db: params['db_name']).order('size_bytes DESC')
-		end
+
+		# if params['db_name'] == 'all'
+		# 	@metadatas = Metadata.order('size_bytes DESC')
+		# else
+    @database = Database.find(params['database_id'])
+		@metadatas = @database.metadatas.order('size_bytes DESC')
+		# end
 	end
 
 	def columns
@@ -23,12 +25,8 @@ class MetadatasController < ApplicationController
 	end
 
   def refresh
-  	db_name = params['db_name']
-		if db_name == 'all'
-			Metadata.all_databases.each { |database| Metadata.get_table_stats(database) }
-    else
-    	Metadata.get_table_stats(db_name)
-  	end
+    @database = Database.find(params['database_id'])
+		Metadata.get_table_stats(@database.id)
     redirect_to action: :index
   end
 end

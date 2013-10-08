@@ -1,4 +1,6 @@
 class Database < ActiveRecord::Base
+  has_many :queries
+  has_many :metadatas
 
   def self.refresh_from_config
     databases = Database.all

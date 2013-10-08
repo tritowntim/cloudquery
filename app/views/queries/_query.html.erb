@@ -1,0 +1,37 @@
+
+<div class="sidebar">
+  <% if !resultset || resultset['detail'].count == 0 %>
+    <%= render partial: 'shared/table_list', locals: {table_list: table_list} %>
+  <% end %>
+</div>
+
+<div>
+  <%= render partial: 'databases/list', locals: { databases: databases, id: database.id } %>
+
+  <%= form_for :query, url: database_queries_url(database.id) do |f| %>
+    <%= f.text_area :sql_text, rows: 10, cols: 120 %>
+    <%= f.submit 'query' %>
+  <% end %>
+  <br/>
+
+  <%= link_to "list tables", database_queries_url(database.id) %>
+  <%#= link_to "recent queries", "/#{db_name}/queries/recent" %>
+
+  <% if resultset %>
+    <br>
+    Retrieved <%= query.record_count %> records
+    in <%= number_with_precision(query.duration_ms.to_f / 1000, precision: 3, delimiter: ",") %> seconds
+    (query <%= query.id %>)
+  <% end %>
+
+  <% if original_query %>
+    <br>
+    Retrieved <%= original_query.record_count %> records
+    in <%= number_with_precision(original_query.duration_ms.to_f / 1000, precision: 3, delimiter: ",") %> seconds
+    (query <%= original_query.id %>)
+    originally at <%= original_query.created_at %>
+  <% end %>
+
+  <%= render partial: 'resultset', locals: {resultset: resultset} %>
+
+</div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008023732) do
+ActiveRecord::Schema.define(version: 20131008045825) do
 
   create_table "databases", force: true do |t|
     t.string   "name"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20131008023732) do
     t.datetime "updated_at",             null: false
     t.integer  "size_bytes",   limit: 8
     t.string   "db"
+    t.integer  "database_id"
   end
 
   create_table "queries", force: true do |t|
@@ -37,6 +38,7 @@ ActiveRecord::Schema.define(version: 20131008023732) do
     t.integer  "record_count"
     t.integer  "duration_ms"
     t.string   "db"
+    t.integer  "database_id"
   end
 
 end
