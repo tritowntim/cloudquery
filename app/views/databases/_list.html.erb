@@ -1,0 +1,7 @@
+<% databases.each do |database|%>
+  <% if database.id == id  %>
+    <strong><%= database.name %></strong>
+  <% else %>
+    <%= link_to database.name, database_path(database) %>
+  <% end %>
+<% end %>
