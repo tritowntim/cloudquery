@@ -1,5 +1,5 @@
 class QueriesController < ApplicationController
-  before_action :default_db, :list_db, :table_list
+  before_action :table_list
 
   def show
     # TODO: run query and display resultset like the default view

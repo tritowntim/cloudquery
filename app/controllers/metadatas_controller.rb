@@ -1,16 +1,12 @@
 class MetadatasController < ApplicationController
-  before_action :default_db, :list_db
 
+  # TODO: support all metadatas, perhaps with route not nested within database (?)
 	def index
-
-		# if params['db_name'] == 'all'
-		# 	@metadatas = Metadata.order('size_bytes DESC')
-		# else
     @database = Database.find(params['database_id'])
 		@metadatas = @database.metadatas.order('size_bytes DESC')
-		# end
 	end
 
+  # TODO: restore columns support
 	def columns
 		sql = <<-SQL
 			    SELECT c.table_name, c.column_name, c.ordinal_position,
@@ -24,9 +20,10 @@ class MetadatasController < ApplicationController
 		@cols = QueryDb.connection.execute(sql)
 	end
 
+  # TODO: accessible via rake task for scheduling some day
   def refresh
     @database = Database.find(params['database_id'])
-		Metadata.get_table_stats(@database.id)
+    Metadata.get_table_stats(@database.id)
     redirect_to action: :index
   end
 end
