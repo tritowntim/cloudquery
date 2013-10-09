@@ -18,7 +18,8 @@ class QueriesController < ApplicationController
 	end
 
 	def recent
-		@queries = Query.where(db: @database.id).order('created_at DESC').limit(50)
+		@database = Database.find(params[:database_id])
+		@queries = Query.where(database_id: @database.id).order('created_at DESC').limit(50)
 	end
 
 	def all
