@@ -14,8 +14,8 @@
   <% end %>
   <br/>
 
-  <%= link_to "list tables", database_queries_url(database.id) %>
-  <%#= link_to "recent queries", "/#{db_name}/queries/recent" %>
+  <%= link_to "list tables", new_database_query_path(database.id) %>
+  <%= link_to "recent queries", database_queries_path(database.id) %>
 
   <% if resultset %>
     <br>

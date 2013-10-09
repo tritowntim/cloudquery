@@ -17,35 +17,23 @@ class QueriesController < ApplicationController
 		manage_query
 	end
 
-	def recent
-		@database = Database.find(params[:database_id])
-		@queries = Query.where(database_id: @database.id).order('created_at DESC').limit(50)
-	end
-
 	def all
 		@queries = Query.order('created_at DESC')
 	end
 
+  # TODO: load last query into text field
+  def new
+    @database = Database.find(params[:database_id])
+    @query = @database.queries.new
+    @resultset = nil
+    @results_count = 0
+    @table_row_counted_at = nil
+  end
 
-	# def index
-	# 	@query = Query.new
-	# 	@resultset = nil
-	# 	@results_count = 0
-	# 	@table_list = Metadata.list_tables(@database.id)
-
-	# 	@table_row_counted_at = nil
-	# end
-
-	def index
-		@database = Database.find(params[:database_id])
-
-		@query = @database.queries.new
-		@resultset = nil
-		@results_count = 0
-		# @table_list = Metadata.list_tables(@db_name)
-
-		@table_row_counted_at = nil
-	end
+  def index
+    @database = Database.find(params[:database_id])
+    @queries = Query.where(database_id: @database.id).order('created_at DESC').limit(50)
+  end
 
 	def create
 		@database = Database.find(params[:database_id])

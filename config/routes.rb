@@ -21,11 +21,7 @@ Cloudquery::Application.routes.draw do
   root to: redirect("/#{Rails.configuration.database_configuration['query_db']['database']}/queries")
 
   resources :databases, only: [:index] do
-    resources :queries, only: [:index, :show, :create] do
-      collection do
-        get 'recent'
-      end
-    end
+    resources :queries, only: [:index, :show, :new, :create]
     resources :metadatas, only: [:index] do
       collection do
         get 'refresh'
