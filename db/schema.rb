@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131008045825) do
+ActiveRecord::Schema.define(version: 20131009115428) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,6 @@ ActiveRecord::Schema.define(version: 20131008045825) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "size_bytes",   limit: 8
-    t.string   "db"
     t.integer  "database_id"
   end
 
@@ -40,7 +39,6 @@ ActiveRecord::Schema.define(version: 20131008045825) do
     t.datetime "updated_at",   null: false
     t.integer  "record_count"
     t.integer  "duration_ms"
-    t.string   "db"
     t.integer  "database_id"
   end
 

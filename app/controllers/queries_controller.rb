@@ -41,7 +41,6 @@ class QueriesController < ApplicationController
     @results = execute_query(sql)
 
     @query.record_count = @results['detail'].count
-    @query.db = @db_name
     @query.save
 
     @new_query = Query.new
