@@ -1,21 +1,14 @@
 class QueriesController < ApplicationController
   before_action :default_db, :list_db, :table_list
 
-	# include ActionView::Helpers::NumberHelpers
-	# respond_to :html, :json
-
-	def show
-		# @database = Database.find(params[:database_id])
-		# @original_query = Query.find(params[:id])
-		# @query = Query.new(sql_text: @original_query.sql_text)
-		# manage_query
-		# TODO: run query and display resultset like the default view
-		# TODO: query.original_query_id to show original query ID
-		# TODO: if resultset has been saved, display saved resultset
-		@database = Database.find(params[:database_id])
-		@query = Query.find(params[:id])
-		manage_query
-	end
+  def show
+    # TODO: run query and display resultset like the default view
+    # TODO: query.original_query_id to show original query ID
+    # TODO: if resultset has been saved, display saved resultset
+    @database = Database.find(params[:database_id])
+    @query = Query.find(params[:id])
+    manage_query
+  end
 
 	def all
 		@queries = Query.order('created_at DESC')
@@ -35,15 +28,14 @@ class QueriesController < ApplicationController
     @queries = Query.where(database_id: @database.id).order('created_at DESC').limit(50)
   end
 
-	def create
-		@database = Database.find(params[:database_id])
-		@query = @database.queries.create(query_params)
-		# manage_query
-					respond_to do |format|
-				format.html { redirect_to database_query_url(@database.id, @query.id) }
-				format.json { render json: @results }
-			end
-	end
+  def create
+    @database = Database.find(params[:database_id])
+    @query = @database.queries.new(query_params)
+
+    if @query.save
+      redirect_to database_query_url(@database.id, @query.id)
+    end
+  end
 
 	private
 
@@ -58,19 +50,6 @@ class QueriesController < ApplicationController
 
 		@new_query = Query.new
 		@new_query.sql_text = sql
-
-		# @table_list = Metadata.list_tables(@db_name)
-
-		# TODO: support natively
-		# render :json => @results
-		# if sql.index('json')
-		# 	render json: @results
-		# else
-		# 	respond_to do |format|
-		# 		format.html { redirect_to database_query_url(@database.id, @query.id) }
-		# 		format.json { render json: @results }
-		# 	end
-		# end
 	end
 
 	def execute_query(sql)
@@ -86,10 +65,6 @@ class QueriesController < ApplicationController
 		resultset = {}
 		resultset['header'] = []
 		header = resultset['header']
-
-	  # head['table_name'] = []
-	  # head['columns_name'] = []
-	  # head['data_type'] = []
 
 		results.fields().each_index do |i|
 			head = {}
