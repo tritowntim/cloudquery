@@ -10,10 +10,6 @@ class QueriesController < ApplicationController
     manage_query
   end
 
-  def all
-    @queries = Query.order('created_at DESC')
-  end
-
   # TODO: load last query into text field
   def new
     @database = Database.find(params[:database_id])

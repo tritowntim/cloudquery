@@ -4,7 +4,6 @@ Cloudquery::Application.routes.draw do
     resources :queries, path: "#{key}/queries", db_name: key do
       collection do
         get 'recent'
-        get 'all'
       end
     end
     resources :metadatas, path: "#{key}/metadatas", db_name: key do
