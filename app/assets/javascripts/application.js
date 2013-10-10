@@ -12,12 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require codemirror
+//= require codemirror/codemirror
 //= require codemirror/modes/sql
 //= require_tree .
 
 $(function() {
-		
+
 		// main query editor
 		textarea = $('textarea')[0]
 		if (textarea) {
@@ -26,7 +26,7 @@ $(function() {
 
 		recent = $('.query-sql-text')
 		if (recent) {
-			recent.each(function(i) { 
+			recent.each(function(i) {
 				sql = $(this).text().trim()
 				$(this).text('')
 				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : true, lineWrapping: true})
