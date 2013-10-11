@@ -21,7 +21,7 @@ class QueriesController < ApplicationController
 
   def index
     @database = Database.find(params[:database_id])
-    @queries = Query.where(database_id: @database.id).order('created_at DESC').limit(50)
+    @queries = Query.where(database_id: @database.id).order('created_at DESC').limit(20)
   end
 
   def create
