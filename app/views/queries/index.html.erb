@@ -1,22 +1,38 @@
-<table>
-	<% @queries.each do |query| %>
+<p>testing</p>
+<p>testing</p>
+<p>testing</p>
+
+<table class="query-index">
+	<thead>
 		<tr>
-			<td>
-					<%= link_to query.id, database_query_path(@database.id, query.id) %>
-			</td>
-			<td>
-					<%= "#{query.created_at}" %>
-			</td>
-			<td>
-				<span class="query-sql-text">
-					<%= simple_format(query.sql_text) %>
-				</span>
-			<td>
-				<%= "#{number_with_delimiter(query.record_count)}" %>
-			</td>
-			<td>
-				<%= "#{number_with_precision(query.duration_ms.to_f / 1000, precision: 3, delimiter: ',')}" %>
-			</td>
+			<th>ID</th>
+			<th>Execution Time</th>
+			<th>Duration</th>
+			<th>Resultset<br>Record<br>Count</th>
+			<th>SQL</th>
 		</tr>
-	<% end %>
+	</thead>
+	<tbody>
+		<% @queries.each do |query| %>
+			<tr>
+				<td>
+						<%= link_to query.id, database_query_path(@database.id, query.id) %>
+				</td>
+				<td>
+						<%= "#{query.created_at.to_formatted_s(:db)}" %>
+				</td>
+				<td>
+					<%= "#{number_with_precision(query.duration_ms.to_f / 1000, precision: 3, delimiter: ',')}" %>
+				</td>
+				<td>
+					<%= "#{number_with_delimiter(query.record_count)}" %>
+				</td>
+				<td>
+					<span class="query-sql-text">
+						<%= simple_format(query.sql_text) %>
+					</span>
+				</td>
+			</tr>
+		<% end %>
+	</tbody>
 </table>

@@ -28,4 +28,40 @@ td pre {
 
 .query-sql-text .CodeMirror {
 	width: 900px;
+  height: auto;
 }
+
+.query-sql-text .CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.query-index td {
+  padding-top: 50px;
+  vertical-align: top;
+}
+
+.query-index thead {
+  background-color: white;
+}
+
+.query-index th {
+  background-color: white;
+}
+
+table.query-index.floatThead-table {
+  background-color: white;
+}
+
+.resultset thead, th {
+  background-color: white;
+}
+
+.resultset.floatThead-table {
+  background-color: white;
+}
+
+.resultset .placeheader {
+  visibility: hidden;
+}
+
