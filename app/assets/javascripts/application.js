@@ -37,6 +37,8 @@ $(function() {
       var $table = $('table.query-index');
       $table.floatThead()
 
+      var $resultset = $('table.resultset');
+      $resultset.floatThead()
 		}
 
 	}

@@ -52,3 +52,16 @@ td pre {
 table.query-index.floatThead-table {
   background-color: white;
 }
+
+.resultset thead, th {
+  background-color: white;
+}
+
+.resultset.floatThead-table {
+  background-color: white;
+}
+
+.resultset .placeheader {
+  visibility: hidden;
+}
+
