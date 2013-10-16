@@ -12,6 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.floatThead
+//= require underscore-min
 //= require codemirror/codemirror
 //= require codemirror/modes/sql
 //= require_tree .
@@ -31,6 +33,12 @@ $(function() {
 				$(this).text('')
 				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : true, lineWrapping: true})
 			})
+
+      var $table = $('table.query-index');
+      $table.floatThead()
+
+      var $resultset = $('table.resultset');
+      $resultset.floatThead()
 		}
 
 	}

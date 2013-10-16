@@ -1,14 +1,8 @@
 
 <% if resultset %>
 
-  <table>
+  <table class="resultset">
     <thead>
-      <tr></tr>
-      <tr></tr>
-      <tr></tr>
-    </thead>
-    <tbody>
-      <%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
       <tr>
         <% resultset['header'].each do | table | %>
           <th><%= table['table_name'] %></th>
@@ -24,6 +18,9 @@
           <th><%= table['data_type'] %></th>
         <% end %>
       </tr>
+    </thead>
+    <tbody>
+      <%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
       <%# TODO: refactor detail as array of hashes {column} array of objects {table name: , column name: , data type: } %>
       <%# TODO: [ {column: value, column: value} %>
       <% resultset['detail'].each do | det | %>
@@ -33,6 +30,21 @@
           <% end %>
         </tr>
       <% end %>
+      <tr class="placeheader">
+        <% resultset['header'].each do | table | %>
+          <th><%= table['table_name'] %></th>
+        <% end %>
+      </tr>
+      <tr class="placeheader">
+        <% resultset['header'].each do | table | %>
+          <th><%= table['column_name'] %></th>
+        <% end %>
+      </tr>
+      <tr class="placeheader">
+        <% resultset['header'].each do | table | %>
+          <th><%= table['data_type'] %></th>
+        <% end %>
+      </tr>
     </tbody>
   </table>
 
