@@ -16,6 +16,7 @@
 
   <%= link_to "list tables", new_database_query_path(database.id) %>
   <%= link_to "recent queries", database_queries_path(database.id) %>
+  <%= link_to "clone this query", request.original_url, target: "_blank" %>
 
   <% if resultset %>
     <br>
