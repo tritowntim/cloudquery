@@ -23,7 +23,7 @@ $(function() {
 		// main query editor
 		textarea = $('textarea')[0]
 		if (textarea) {
-			CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true})
+			CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true, lineNumbers: true})
 		}
 
 		recent = $('.query-sql-text')
@@ -31,7 +31,7 @@ $(function() {
 			recent.each(function(i) {
 				sql = $(this).text().trim()
 				$(this).text('')
-				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : true, lineWrapping: true})
+				CodeMirror(this, {value : sql, mode : "text/x-sql", readOnly : true, lineWrapping: true, lineNumbers: true})
 			})
 
       var $table = $('table.query-index');
