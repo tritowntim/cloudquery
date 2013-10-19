@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20131009115428) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "databases", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -27,16 +24,16 @@ ActiveRecord::Schema.define(version: 20131009115428) do
     t.text     "schema"
     t.text     "name"
     t.integer  "record_count"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "size_bytes",   limit: 8
     t.integer  "database_id"
   end
 
   create_table "queries", force: true do |t|
     t.text     "sql_text"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "record_count"
     t.integer  "duration_ms"
     t.integer  "database_id"
