@@ -65,3 +65,12 @@ table.query-index.floatThead-table {
   visibility: hidden;
 }
 
+.editor-auto-resize .CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+
+.editor-auto-resize .CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}

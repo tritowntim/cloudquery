@@ -18,6 +18,11 @@
 //= require codemirror/modes/sql
 //= require_tree .
 
+function toggleAutoResize(ev) {
+  ev.preventDefault()
+  $('#editor').toggleClass('editor-auto-resize')
+}
+
 $(function() {
 
 		// main query editor
@@ -41,5 +46,7 @@ $(function() {
       $resultset.floatThead()
 		}
 
+    $('#toggle-auto-resize').on('click', toggleAutoResize)
 	}
 )
+

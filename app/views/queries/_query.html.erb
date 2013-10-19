@@ -9,7 +9,9 @@
   <%= render partial: 'databases/list', locals: { databases: databases, id: database.id } %>
 
   <%= form_for :query, url: database_queries_url(database.id) do |f| %>
-    <%= f.text_area :sql_text, rows: 10, cols: 120 %>
+    <div id="editor">
+      <%= f.text_area :sql_text %>
+    </div>
     <%= f.submit 'query' %>
   <% end %>
   <br/>
@@ -17,6 +19,7 @@
   <%= link_to "list tables", new_database_query_path(database.id) %>
   <%= link_to "recent queries", database_queries_path(database.id) %>
   <%= link_to "clone this query", request.original_url, target: "_blank" %>
+  <%= link_to "toggle", "#", id: "toggle-auto-resize" %>
 
   <% if resultset %>
     <br>
