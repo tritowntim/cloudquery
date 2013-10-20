@@ -18,9 +18,12 @@
 //= require codemirror/modes/sql
 //= require_tree .
 
+window.cm = null
+
 function toggleAutoResize(ev) {
   ev.preventDefault()
   $('#editor').toggleClass('editor-auto-resize')
+  cm.refresh()
 }
 
 $(function() {
@@ -28,7 +31,7 @@ $(function() {
 		// main query editor
 		textarea = $('textarea')[0]
 		if (textarea) {
-			CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true, lineNumbers: true})
+			window.cm = CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true, lineNumbers: true})
 		}
 
 		recent = $('.query-sql-text')
