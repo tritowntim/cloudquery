@@ -22,7 +22,9 @@ gem 'jquery-rails'
 gem 'jbuilder', '~> 1.2'
 
 gem 'unicorn'
-# gem 'unicorn-rails'
+
+# Bootstrap 3
+gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass'
 
 group :development do
 	gem 'pry-rails'
