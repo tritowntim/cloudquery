@@ -74,3 +74,8 @@ table.query-index.floatThead-table {
   overflow-y: hidden;
   overflow-x: auto;
 }
+
+a.minor {
+  color: gray;
+}
+

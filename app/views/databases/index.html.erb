@@ -2,7 +2,8 @@
 <table>
   <% @databases.each do |database| %>
     <tr>
-      <td><%= link_to database.name, database_queries_path(database.id) %></td>
+      <td><%= link_to database.name, database_queries_path(database) %></td>
+      <td><%= link_to "table stats", database_metadatas_path(database), class: 'minor' %></td>
     </tr>
   <% end %>
 </table>
