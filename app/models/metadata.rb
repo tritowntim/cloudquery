@@ -6,7 +6,7 @@ class Metadata < ActiveRecord::Base
       tables.each do |table|
         Metadata.find_or_create_by(name: table['table_name'], object_type: 'table', schema: 'public', database_id: database_id)
       end
-      Metadata.where(database_id: database_id)
+      Metadata.where(database_id: database_id).order(:name)
     end
 
     def self.get_table_stats(database_id)
