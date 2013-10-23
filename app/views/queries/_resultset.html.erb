@@ -9,9 +9,10 @@
       <%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
       <%# TODO: refactor detail as array of hashes {column} array of objects {table name: , column name: , data type: } %>
       <%# TODO: [ {column: value, column: value} %>
-      <% resultset['detail'].each do | detail | %>
+      <% resultset['detail'].each_with_index do | detail, j| %>
         <tr>
           <% i = 0 %>
+          <td class="column-row-number"><%= j+1 %></td>
           <% detail.each do |k,v| %>
             <td><%= render_value(v, resultset['header'][i]['data_type']) %></td>
             <% i = i + 1 %>
