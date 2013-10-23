@@ -3,21 +3,7 @@
 
   <table class="resultset">
     <thead>
-      <tr>
-        <% resultset['header'].each do | column | %>
-          <th><%= column['column_name'] %></th>
-        <% end %>
-      </tr>
-      <tr>
-        <% resultset['header'].each do | column | %>
-          <th><%= column['column_name'] %></th>
-        <% end %>
-      </tr>
-      <tr>
-        <% resultset['header'].each do | column | %>
-          <th><%= column['data_type'] %></th>
-        <% end %>
-      </tr>
+        <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: ''} %>
     </thead>
     <tbody>
       <%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
@@ -32,21 +18,7 @@
           <% end %>
         </tr>
       <% end %>
-      <tr class="placeheader">
-        <% resultset['header'].each do | column | %>
-          <th><%= column['column_name'] %></th>
-        <% end %>
-      </tr>
-      <tr class="placeheader">
-        <% resultset['header'].each do | column | %>
-          <th><%= column['column_name'] %></th>
-        <% end %>
-      </tr>
-      <tr class="placeheader">
-        <% resultset['header'].each do | column | %>
-          <th><%= column['data_type'] %></th>
-        <% end %>
-      </tr>
+      <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: 'placeheader'} %>
     </tbody>
   </table>
 

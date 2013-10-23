@@ -1,0 +1,16 @@
+
+      <tr class="<%= row_class %>">
+        <% resultset['header'].each do | column | %>
+          <th><%= column['table_name'] %></th>
+        <% end %>
+      </tr>
+      <tr class="<%= row_class %>">
+        <% resultset['header'].each do | column | %>
+          <th><%= column['column_name'] %></th>
+        <% end %>
+      </tr>
+      <tr class="<%= row_class %>">
+        <% resultset['header'].each do | column | %>
+          <th><%= column['data_type'] %></th>
+        <% end %>
+      </tr>
