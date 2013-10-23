@@ -4,18 +4,18 @@
   <table class="resultset">
     <thead>
       <tr>
-        <% resultset['header'].each do | table | %>
-          <th><%= table['table_name'] %></th>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['column_name'] %></th>
         <% end %>
       </tr>
       <tr>
-        <% resultset['header'].each do | table | %>
-          <th><%= table['column_name'] %></th>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['column_name'] %></th>
         <% end %>
       </tr>
       <tr>
-        <% resultset['header'].each do | table | %>
-          <th><%= table['data_type'] %></th>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['data_type'] %></th>
         <% end %>
       </tr>
     </thead>
@@ -23,26 +23,28 @@
       <%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
       <%# TODO: refactor detail as array of hashes {column} array of objects {table name: , column name: , data type: } %>
       <%# TODO: [ {column: value, column: value} %>
-      <% resultset['detail'].each do | det | %>
+      <% resultset['detail'].each do | detail | %>
         <tr>
-          <% det.each do |k,v| %>
-            <td><%= v %></td>
+          <% i = 0 %>
+          <% detail.each do |k,v| %>
+            <td><%= render_value(v, resultset['header'][i]['data_type']) %></td>
+            <% i = i + 1 %>
           <% end %>
         </tr>
       <% end %>
       <tr class="placeheader">
-        <% resultset['header'].each do | table | %>
-          <th><%= table['table_name'] %></th>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['column_name'] %></th>
         <% end %>
       </tr>
       <tr class="placeheader">
-        <% resultset['header'].each do | table | %>
-          <th><%= table['column_name'] %></th>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['column_name'] %></th>
         <% end %>
       </tr>
       <tr class="placeheader">
-        <% resultset['header'].each do | table | %>
-          <th><%= table['data_type'] %></th>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['data_type'] %></th>
         <% end %>
       </tr>
     </tbody>

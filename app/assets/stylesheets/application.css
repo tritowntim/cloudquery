@@ -79,3 +79,7 @@ a.minor {
   color: gray;
 }
 
+.column-boolean {
+  font-variant: small-caps;
+}
+
