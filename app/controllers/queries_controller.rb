@@ -26,10 +26,19 @@ class QueriesController < ApplicationController
 
   def create
     @database = Database.find(params[:database_id])
-    @query = @database.queries.new(query_params)
+    @query = @database.queries.new(new_query_params)
 
     if @query.save
       redirect_to database_query_url(@database.id, @query.id)
+    end
+  end
+
+  def update
+    @database = Database.find(params[:database_id])
+    @query = Query.find(params[:id])
+
+    if @query.update_attributes(edit_query_params)
+      redirect_to database_queries_url(@database.id)
     end
   end
 
@@ -94,8 +103,12 @@ class QueriesController < ApplicationController
     lookup
   end
 
-  def query_params
+  def new_query_params
     params.require(:query).permit(:sql_text)
+  end
+
+  def edit_query_params
+    params.require(:query).permit(:notes)
   end
 
   def table_list

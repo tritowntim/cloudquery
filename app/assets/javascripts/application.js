@@ -29,7 +29,7 @@ function toggleAutoResize(ev) {
 $(function() {
 
 		// main query editor
-		textarea = $('textarea')[0]
+		textarea = $('#editor textarea')[0]
 		if (textarea) {
 			window.cm = CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true, lineNumbers: true})
 		}
