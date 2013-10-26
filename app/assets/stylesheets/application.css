@@ -53,6 +53,10 @@ table.query-index.floatThead-table {
   background-color: white;
 }
 
+.resultset thead tr:nth-child(1) {
+  border: 2px solid #dddddd;
+}
+
 .resultset thead, th {
   background-color: white;
 }
