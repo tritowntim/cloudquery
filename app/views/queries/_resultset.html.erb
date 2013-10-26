@@ -1,7 +1,6 @@
 
 <% if resultset %>
-
-  <table class="resultset">
+  <table class="resultset table table-bordered table-striped">
     <thead>
         <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: ''} %>
     </thead>
