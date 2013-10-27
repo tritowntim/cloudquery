@@ -26,6 +26,8 @@ gem 'unicorn'
 # Bootstrap 3
 gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass'
 
+gem 'friendly_id', '~> 5.0.0'
+
 group :development do
 	gem 'pry-rails'
 end

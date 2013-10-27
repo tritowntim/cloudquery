@@ -1,7 +1,7 @@
 
 <%= render partial: 'databases/list', locals: { databases: @databases, id: @database.id } %>
 
-<em>&nbsp;&nbsp;&nbsp;<%= link_to "new query", new_database_query_path(@database.id) %></em>
+<em>&nbsp;&nbsp;&nbsp;<%= link_to "new query", new_database_query_path(@database) %></em>
 
 <table class="query-index">
 	<thead>
@@ -18,7 +18,7 @@
 		<% @queries.each do |query| %>
 			<tr>
 				<td>
-						<%= link_to query.id, database_query_path(@database.id, query.id) %>
+						<%= link_to query.id, database_query_path(@database, query) %>
 				</td>
 				<td>
 						<%= "#{query.created_at.to_formatted_s(:db)}" %>
@@ -35,7 +35,7 @@
 					</span>
 				</td>
 				<td>
-					<%= form_for query, url: database_query_path(@database.id, query.id), remote: true do |f| %>
+					<%= form_for query, url: database_query_path(@database, query), remote: true do |f| %>
 				    <%= f.text_area :notes, rows: 5, autocomplete: 'off' %>
 				    <%= f.submit 'save' %>
 				  <% end %>

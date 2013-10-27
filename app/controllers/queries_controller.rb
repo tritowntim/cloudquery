@@ -5,14 +5,14 @@ class QueriesController < ApplicationController
     # TODO: run query and display resultset like the default view
     # TODO: query.original_query_id to show original query ID
     # TODO: if resultset has been saved, display saved resultset
-    @database = Database.find(params[:database_id])
+    find_database
     @query = Query.find(params[:id])
     manage_query
   end
 
   # TODO: load last query into text field
   def new
-    @database = Database.find(params[:database_id])
+    find_database
     @query = @database.queries.new
     @resultset = nil
     @results_count = 0
@@ -20,12 +20,12 @@ class QueriesController < ApplicationController
   end
 
   def index
-    @database = Database.find(params[:database_id])
+    find_database
     @queries = Query.where(database_id: @database.id).order('created_at DESC').limit(20)
   end
 
   def create
-    @database = Database.find(params[:database_id])
+    find_database
     @query = @database.queries.new(new_query_params)
 
     if @query.save
@@ -34,7 +34,7 @@ class QueriesController < ApplicationController
   end
 
   def update
-    @database = Database.find(params[:database_id])
+    find_database
     @query = Query.find(params[:id])
 
     if @query.update_attributes(edit_query_params)
@@ -113,5 +113,9 @@ class QueriesController < ApplicationController
 
   def table_list
     @table_list = Metadata.list_tables(params[:database_id])
+  end
+
+  def find_database
+    @database = Database.friendly.find(params[:database_id])
   end
 end

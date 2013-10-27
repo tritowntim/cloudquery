@@ -2,7 +2,7 @@ class MetadatasController < ApplicationController
 
   # TODO: support all metadatas, perhaps with route not nested within database (?)
   def index
-    @database = Database.find(params['database_id'])
+    find_database
     @metadatas = @database.metadatas.order('size_bytes DESC')
   end
 
@@ -22,8 +22,14 @@ class MetadatasController < ApplicationController
 
   # TODO: accessible via rake task for scheduling some day
   def refresh
-    @database = Database.find(params['database_id'])
+    find_database
     Metadata.get_table_stats(@database.id)
     redirect_to action: :index
+  end
+
+  private
+
+  def find_database
+    @database = Database.friendly.find(params['database_id'])
   end
 end
