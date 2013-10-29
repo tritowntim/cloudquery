@@ -54,7 +54,13 @@ table.query-index.floatThead-table {
 }
 
 .resultset thead tr:nth-child(1) {
-  border: 2px solid #dddddd;
+  border-top-color: #dddddd;
+  border-top-style: solid;
+  border-top-width: 2px;
+}
+
+.table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+  border-bottom-width: 1px !important;
 }
 
 .resultset thead, th {
