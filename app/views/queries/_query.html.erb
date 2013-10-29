@@ -8,7 +8,7 @@
 <div>
   <%= render partial: 'databases/list', locals: { databases: databases, id: database.id } %>
 
-  <%= form_for :query, url: database_queries_url(database.id) do |f| %>
+  <%= form_for :query, url: database_queries_url(database) do |f| %>
     <div id="editor">
       <%= f.text_area :sql_text %>
     </div>

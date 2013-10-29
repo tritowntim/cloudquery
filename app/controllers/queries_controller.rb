@@ -29,7 +29,7 @@ class QueriesController < ApplicationController
     @query = @database.queries.new(new_query_params)
 
     if @query.save
-      redirect_to database_query_url(@database.id, @query.id)
+      redirect_to database_query_url(@database, @query)
     end
   end
 
