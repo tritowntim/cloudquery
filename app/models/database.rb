@@ -1,9 +1,13 @@
 class Database < ActiveRecord::Base
   extend FriendlyId
-  friendly_id :name, use: :slugged
+  friendly_id :hyphentated_name, use: :slugged
 
   has_many :queries
   has_many :metadatas
+
+  def hyphentated_name
+    name.gsub("_", "-")
+  end
 
   def self.refresh_from_config
     databases = Database.all
