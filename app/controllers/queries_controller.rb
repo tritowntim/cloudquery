@@ -57,6 +57,8 @@ class QueriesController < ApplicationController
   end
 
   def execute_query(sql)
+    DataType.load_all
+
     query_begin = Time.now.strftime('%s%3N').to_i
     puts "DB QUERY BEGIN  #{Time.now}  #{}"
     results = QueryDb.get_connection(@database.id).execute(sql)
@@ -74,7 +76,7 @@ class QueriesController < ApplicationController
       head = {}
       head['column_name'] = results.fname(i)
       head['table_name'] = table_oid[results.ftable(i)]
-      head['data_type'] = QueryDb.get_connection(@database.id).execute("SELECT format_type(#{results.ftype(i)}, #{results.fmod(i)})").getvalue(0,0)
+      head['data_type'] = DataType.lookup(results.ftype(i), results.fmod(i))
       header << head
     end
 
