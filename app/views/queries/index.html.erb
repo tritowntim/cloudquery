@@ -1,5 +1,5 @@
 
-<%= render partial: 'databases/list', locals: { databases: @databases, id: @database.id } %>
+<%= render partial: 'databases/list', locals: { databases: @databases, id: @database.id, sibling_path: "database_queries_path" } %>
 
 <em>&nbsp;&nbsp;&nbsp;<%= link_to "new query", new_database_query_path(@database) %></em>
 

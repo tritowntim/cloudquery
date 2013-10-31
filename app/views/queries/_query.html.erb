@@ -6,7 +6,7 @@
 </div>
 
 <div>
-  <%= render partial: 'databases/list', locals: { databases: databases, id: database.id } %>
+  <%= render partial: 'databases/list', locals: { databases: databases, id: database.id, sibling_path: "new_database_query_path" } %>
 
   <%= form_for :query, url: database_queries_url(database) do |f| %>
     <div id="editor">
