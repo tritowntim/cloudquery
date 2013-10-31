@@ -114,7 +114,7 @@ class QueriesController < ApplicationController
   end
 
   def table_list
-    @table_list = Metadata.list_tables(params[:database_id])
+    @table_list = Metadata.list_tables(Database.friendly.find(params[:database_id]).id)
   end
 
   def find_database
