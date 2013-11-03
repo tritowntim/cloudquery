@@ -1,0 +1,1 @@
+$("#edit_query_<%= @query.id %>").replaceWith(' <%= j render(partial: "notes", locals: {database: @database, query: @query}) %> ');

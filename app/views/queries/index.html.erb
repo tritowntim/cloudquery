@@ -35,10 +35,7 @@
 					</span>
 				</td>
 				<td>
-					<%= form_for query, url: database_query_path(@database, query), remote: true do |f| %>
-				    <%= f.text_area :notes, rows: 5, autocomplete: 'off' %>
-				    <%= f.submit 'save' %>
-				  <% end %>
+					<%= render partial: 'notes', locals: { database: @database, query: query } %>
 				</td>
 			</tr>
 		<% end %>

@@ -1,5 +1,6 @@
 class QueriesController < ApplicationController
   before_action :table_list
+  respond_to :html, :json, :js
 
   def show
     # TODO: run query and display resultset like the default view
@@ -17,6 +18,11 @@ class QueriesController < ApplicationController
     @resultset = nil
     @results_count = 0
     @table_row_counted_at = nil
+  end
+
+  def edit
+    find_database
+    @query = Query.find(params[:id])
   end
 
   def index
@@ -38,7 +44,10 @@ class QueriesController < ApplicationController
     @query = Query.find(params[:id])
 
     if @query.update_attributes(edit_query_params)
-      redirect_to database_queries_url(@database.id)
+      respond_to do |format|
+        format.html { redirect_to database_queries_url(@database.id) }
+        format.js
+      end
     end
   end
 

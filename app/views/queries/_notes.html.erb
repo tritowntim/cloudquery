@@ -1,0 +1,5 @@
+<div id="<%= "edit-#{query.id}" %>">
+  <%= query.notes %>
+  <br>
+  <%= link_to 'edit', edit_database_query_path(database, query), remote: true %>
+</div>

@@ -1,7 +1,7 @@
 Cloudquery::Application.routes.draw do
 
   resources :databases, only: [:index] do
-    resources :queries, only: [:index, :show, :new, :create, :update]
+    resources :queries, only: [:index, :show, :new, :create, :edit, :update]
     resources :metadatas, only: [:index] do
       collection do
         get 'refresh'
