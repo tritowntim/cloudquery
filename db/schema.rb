@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131030032422) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20131103212846) do
 
   create_table "data_types", force: true do |t|
     t.integer  "ftype"
@@ -57,12 +54,14 @@ ActiveRecord::Schema.define(version: 20131030032422) do
 
   create_table "queries", force: true do |t|
     t.text     "sql_text"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
     t.integer  "record_count"
     t.integer  "duration_ms"
     t.integer  "database_id"
     t.text     "notes"
+    t.string   "pg_exception_class"
+    t.text     "pg_exception"
   end
 
 end
