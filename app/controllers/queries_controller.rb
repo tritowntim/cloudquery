@@ -103,6 +103,18 @@ class QueriesController < ApplicationController
     end
 
     resultset
+
+    rescue => e
+      5.times { puts "" }
+      puts "class=#{e.class}"
+      puts e
+      puts "original exception =#{e.original_exception}"
+      puts e.original_exception
+      5.times { puts "" }
+      x = {}
+      x['header'] = []
+      x['detail'] = []
+      x
   end
 
   def oid_table_name
