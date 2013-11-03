@@ -11,6 +11,8 @@
 			<th>Duration</th>
 			<th>Resultset<br>Record<br>Count</th>
 			<th>SQL</th>
+			<th>Exception Class</th>
+			<th>Exception</th>
 			<th>Notes</th>
 		</tr>
 	</thead>
@@ -30,9 +32,15 @@
 					<%= "#{number_with_delimiter(query.record_count)}" %>
 				</td>
 				<td>
-					<span class="query-sql-text">
+					<span class="query-read-only-sql-text">
 						<%= simple_format(query.sql_text) %>
 					</span>
+				</td>
+				<td>
+					<%= query.pg_exception_class %>
+				</td>
+				<td>
+					<%= query.pg_exception %>
 				</td>
 				<td>
 					<%= render partial: 'notes', locals: { database: @database, query: query } %>
