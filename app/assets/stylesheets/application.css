@@ -36,6 +36,11 @@ td pre {
   overflow-x: auto;
 }
 
+.query-read-only-sql-text .CodeMirror {
+  width: 600px;
+  height: auto;
+}
+
 .query-index td {
   padding-top: 50px;
   vertical-align: top;

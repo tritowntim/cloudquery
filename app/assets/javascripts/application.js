@@ -34,7 +34,7 @@ $(function() {
 			window.cm = CodeMirror.fromTextArea(textarea, {mode : "text/x-sql", autofocus : true, lineNumbers: true})
 		}
 
-		recent = $('.query-sql-text')
+		recent = $('.query-sql-text, .query-read-only-sql-text')
 		if (recent) {
 			recent.each(function(i) {
 				sql = $(this).text().trim()

@@ -58,7 +58,6 @@ class QueriesController < ApplicationController
 
     @results = execute_query(sql)
 
-    @query.record_count = @results['detail'].count
     @query.save
 
     @new_query = Query.new
@@ -102,7 +101,21 @@ class QueriesController < ApplicationController
       detail << det
     end
 
+    @query.record_count = resultset['detail'].count
+
     resultset
+
+    rescue => e
+
+      @query.pg_exception_class = e.original_exception.class.to_s
+      @query.pg_exception = e.original_exception.to_s
+      @query.duration_ms = nil
+      @query.record_count = nil
+
+      empty_resultset = {}
+      empty_resultset['header'] = []
+      empty_resultset['detail'] = []
+      empty_resultset
   end
 
   def oid_table_name
