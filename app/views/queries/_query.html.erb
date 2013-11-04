@@ -21,7 +21,7 @@
   <%= link_to "clone this query", request.original_url, target: "_blank" %>
   <%= link_to "toggle", "#", id: "toggle-auto-resize" %>
 
-  <% if resultset %>
+  <% if resultset && !query.pg_exception_class %>
     <br>
     Retrieved <%= query.record_count %> records
     in <%= number_with_precision(query.duration_ms.to_f / 1000, precision: 3, delimiter: ",") %> seconds
@@ -36,6 +36,6 @@
     originally at <%= original_query.created_at %>
   <% end %>
 
-  <%= render partial: 'resultset', locals: {resultset: resultset} %>
+  <%= render partial: 'resultset', locals: {query: query, resultset: resultset} %>
 
 </div>

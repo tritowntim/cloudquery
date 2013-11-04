@@ -1,5 +1,5 @@
 
-<% if resultset %>
+<% if resultset && !query.pg_exception_class %>
   <table class="resultset table table-bordered table-striped table-condensed">
     <thead>
         <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: ''} %>
@@ -21,5 +21,10 @@
       <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: 'placeheader'} %>
     </tbody>
   </table>
-
+<% elsif query.pg_exception_class %>
+  <div class="alert alert-danger">
+    <p></p>
+    <p><strong><%= query.pg_exception_class %></strong></p>
+    <p><%= query.pg_exception %></p>
+  </div>
 <% end %>
