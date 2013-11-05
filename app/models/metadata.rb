@@ -11,10 +11,13 @@ class Metadata < ActiveRecord::Base
 
     def self.get_table_stats(database_id)
       list_tables(database_id).each do |table|
-        table.record_count = QueryDb.get_connection(database_id).execute("SELECT COUNT(1) FROM #{table.name}")[0]['count']
-        table.size_bytes = QueryDb.get_connection(database_id).execute("SELECT PG_TOTAL_RELATION_SIZE('#{table.name}')")[0]['pg_total_relation_size']
-        table.touch
-        table.save
+        begin
+          table.record_count = QueryDb.get_connection(database_id).execute("SELECT COUNT(1) FROM #{table.name}")[0]['count']
+          table.size_bytes = QueryDb.get_connection(database_id).execute("SELECT PG_TOTAL_RELATION_SIZE('#{table.name}')")[0]['pg_total_relation_size']
+          table.touch
+          table.save
+        rescue => e
+        end
       end
     end
 
