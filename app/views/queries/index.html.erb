@@ -3,7 +3,7 @@
 
 <em>&nbsp;&nbsp;&nbsp;<%= link_to "new query", new_database_query_path(@database) %></em>
 
-<table class="query-index">
+<table class="query-index table table-bordered">
 	<thead>
 		<tr>
 			<th>ID</th>
@@ -11,11 +11,19 @@
 			<th>Duration</th>
 			<th>Resultset<br>Record<br>Count</th>
 			<th>SQL</th>
-			<th>Exception Class</th>
-			<th>Exception</th>
 			<th>Notes</th>
 		</tr>
 	</thead>
+  <tfoot>
+    <tr>
+      <th>ID</th>
+      <th>Execution Time</th>
+      <th>Duration</th>
+      <th>Resultset<br>Record<br>Count</th>
+      <th>SQL</th>
+      <th>Notes</th>
+    </tr>
+  </tfoot>
 	<tbody>
 		<% @queries.each do |query| %>
 			<tr>
@@ -25,22 +33,23 @@
 				<td>
 						<%= "#{query.created_at.to_formatted_s(:db)}" %>
 				</td>
-				<td>
-					<%= "#{number_with_precision(query.duration_ms.to_f / 1000, precision: 3, delimiter: ',')}" %>
-				</td>
-				<td>
-					<%= "#{number_with_delimiter(query.record_count)}" %>
-				</td>
+        <% if query.pg_exception_class %>
+          <td colspan="2" class="alert alert-danger" >
+            <%= query.pg_exception_class %>
+            <%#= query.pg_exception %>
+          </td>
+        <% else %>
+  				<td>
+  					<%= "#{number_with_precision(query.duration_ms.to_f / 1000, precision: 3, delimiter: ',')}" %>
+  				</td>
+  				<td>
+  					<%= "#{number_with_delimiter(query.record_count)}" %>
+  				</td>
+        <% end %>
 				<td>
 					<span class="query-read-only-sql-text">
 						<%= simple_format(query.sql_text) %>
 					</span>
-				</td>
-				<td>
-					<%= query.pg_exception_class %>
-				</td>
-				<td>
-					<%= query.pg_exception %>
 				</td>
 				<td>
 					<%= render partial: 'notes', locals: { database: @database, query: query } %>
@@ -48,4 +57,5 @@
 			</tr>
 		<% end %>
 	</tbody>
+  <t
 </table>

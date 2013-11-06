@@ -58,7 +58,7 @@ table.query-index.floatThead-table {
   background-color: white;
 }
 
-.resultset thead tr:nth-child(1) {
+.table-bordered thead tr:nth-child(1) {
   border-top-color: #dddddd;
   border-top-style: solid;
   border-top-width: 2px;
@@ -68,15 +68,16 @@ table.query-index.floatThead-table {
   border-bottom-width: 1px !important;
 }
 
-.resultset thead, th {
+.table-bordered thead, th {
   background-color: white;
 }
 
-.resultset.floatThead-table {
+.table-bordered.floatThead-table {
   background-color: white;
 }
 
-.resultset .placeheader {
+/* TODO: REPLACE WITH TFOOT BELOW */
+.table-bordered .placeheader {
   visibility: hidden;
 }
 
@@ -100,5 +101,9 @@ a.minor {
 
 .column-row-number {
   font-size: x-small;
+}
+
+tfoot {
+  visibility: hidden;
 }
 
