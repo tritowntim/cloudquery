@@ -1,6 +1,10 @@
 
 <%= render partial: 'databases/list', locals: { databases: @databases, id: @database.id, sibling_path: "database_queries_path" } %>
 
+<!-- TODO: replace by shrinking SQL, not hiding altogether... -->
+<!-- TODO: for shrunken SQL, give option to expand queries one by one -->
+<!-- TODO: ... and mouseover preview in modal -->
+<em>&nbsp;&nbsp;&nbsp;<%= link_to "toggle SQL", "#", id: "toggle-query-index-compact" %></em>
 <em>&nbsp;&nbsp;&nbsp;<%= link_to "new query", new_database_query_path(@database) %></em>
 
 <table class="query-index table table-bordered">
@@ -36,7 +40,7 @@
         <% if query.pg_exception_class %>
           <td colspan="2" class="alert alert-danger" >
             <%= query.pg_exception_class %>
-            <%#= query.pg_exception %>
+            <%# TODO show as modal = query.pg_exception %>
           </td>
         <% else %>
   				<td>

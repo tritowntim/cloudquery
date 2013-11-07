@@ -26,6 +26,11 @@ function toggleAutoResize(ev) {
   cm.refresh()
 }
 
+function toggleHideQueryIndex(ev) {
+  ev.preventDefault()
+  $('.query-read-only-sql-text').toggleClass('query-read-only-sql-text-hide')
+}
+
 $(function() {
 
 		// main query editor
@@ -50,6 +55,7 @@ $(function() {
 		}
 
     $('#toggle-auto-resize').on('click', toggleAutoResize)
+    $('#toggle-query-index-hide').on('click', toggleHideQueryIndex)
 	}
 )
 

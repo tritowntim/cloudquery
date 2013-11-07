@@ -41,6 +41,10 @@ td pre {
   height: auto;
 }
 
+.query-read-only-sql-text-hidden {
+  display: none;
+}
+
 .query-index td {
   padding-top: 50px;
   vertical-align: top;
