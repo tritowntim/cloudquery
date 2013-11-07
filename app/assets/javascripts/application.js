@@ -28,7 +28,7 @@ function toggleAutoResize(ev) {
 
 function toggleHideQueryIndex(ev) {
   ev.preventDefault()
-  $('.query-read-only-sql-text').toggleClass('query-read-only-sql-text-hide')
+  $('.query-read-only-sql-text').toggleClass('query-read-only-sql-text-hidden')
 }
 
 $(function() {
