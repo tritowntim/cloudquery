@@ -111,3 +111,7 @@ tfoot {
   visibility: hidden;
 }
 
+.resultset .metadata th {
+  font-variant: small-caps;
+  font-weight: normal;
+}
