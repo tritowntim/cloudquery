@@ -80,11 +80,6 @@ table.query-index.floatThead-table {
   background-color: white;
 }
 
-/* TODO: REPLACE WITH TFOOT BELOW */
-.table-bordered .placeheader {
-  visibility: hidden;
-}
-
 .editor-auto-resize .CodeMirror {
   border: 1px solid #eee;
   height: auto;

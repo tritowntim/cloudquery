@@ -1,39 +1,16 @@
-      <tr class="<%= row_class %>">
-        <th/>
-        <% resultset['header'].each do | column | %>
-          <th><%= column['column_name'] %></th>
-        <% end %>
-      </tr>
 
-      <tr class="<%= row_class %> metadata">
-        <th/>
-        <% previous_column, colspan = '', 0 %>
-        <% resultset['header'].each_with_index do | column, i | %>
-          <% if i == 0 %>
-            <th><%= column['table_name'] %>
-            <% colspan = 1 %>
-          <% else %>
-            <% if previous_column == column['table_name'] %>
-              <% colspan += 1 %>
-            <% else %>
-              </th>
-              <th colspan="<%= colspan %>">
-                <%= column['table_name'] %>
-              <% colspan = 0 %>
-            <% end %>
-            <% if i == resultset['header'].length - 1 %>
-              <th colspan="<%= colspan %>">
-                <%= column['table_name'] %>
-            <% end %>
-          <% end %>
-          <% previous_column = column['table_name'] %>
-        <% end %>
-        </th>
-      </tr>
+      <%= resultset_header_row_datasource_table_name resultset['header'] %>
 
       <tr class="<%= row_class %> metadata">
         <th/>
         <% resultset['header'].each do | column | %>
           <th><%= column['data_type'] %></th>
+        <% end %>
+      </tr>
+
+      <tr class="<%= row_class %>">
+        <th/>
+        <% resultset['header'].each do | column | %>
+          <th><%= column['column_name'] %></th>
         <% end %>
       </tr>

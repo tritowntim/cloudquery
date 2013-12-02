@@ -4,6 +4,9 @@
     <thead>
         <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: ''} %>
     </thead>
+    <tfoot>
+      <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: ''} %>
+    </tfoot>
     <tbody>
       <%# TODO: refactor as header is array of objects {table name: , column name: , data type: } %>
       <%# TODO: refactor detail as array of hashes {column} array of objects {table name: , column name: , data type: } %>
@@ -18,7 +21,6 @@
           <% end %>
         </tr>
       <% end %>
-      <%= render partial: 'resultset_header', locals: {resultset: resultset, row_class: 'placeheader'} %>
     </tbody>
   </table>
 <% elsif query.pg_exception_class %>
